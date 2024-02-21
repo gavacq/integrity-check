@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="bg-red-300">
+    <div >
       <h1 className="text-3xl font-bold underline">Integrity Check v0.1</h1>
       <NotificationPermission />
       <NotificationSender />

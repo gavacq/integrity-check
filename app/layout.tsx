@@ -27,27 +27,21 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "rgb(23, 23, 23)",
-};
+// export const viewport: Viewport = {
+//   themeColor: "rgb(23, 23, 23)",
+// };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" dir="ltr">
       <head>
-        <style>{`
-            html, body, #__next {
-              height: 100%;
-            }
-            #__next {
-              margin: 0 auto;
-            }
-            h1 {
-              text-align: center;
-            }
-            `}</style>
       </head>
-      <body className="bg-gradient-to-b from-ebony-950 from-70% to-black-pearl-950">{children}</body>
+      {/* <body className="h-screen bg-gradient-to-b from-ebony-950 from-70% to-black-pearl-950">{children}</body> */}
+      <body>
+        <div className="min-h-screen">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
