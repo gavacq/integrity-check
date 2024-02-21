@@ -21,6 +21,11 @@ self.addEventListener('push', function(event) {
   event.waitUntil(self.registration.showNotification(payload?.notification.title || 'Default title', options));
 });
 
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(self.clients.openWindow('https://integrity-check.vercel.app'));
+})
+
 installSerwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
