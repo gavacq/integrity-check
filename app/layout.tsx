@@ -46,12 +46,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head>
-      </head>
-      {/* <body className="h-screen bg-gradient-to-b from-ebony-950 from-70% to-black-pearl-950">{children}</body> */}
       <body>
-        <div className="flex custom-background min-h-screen">
-          <main className="flex-grow">
+        <div className="flex min-h-screen custom-background-gradient">
+          <main className="flex grow">
             {children}
           </main>
         </div>

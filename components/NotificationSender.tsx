@@ -1,5 +1,8 @@
 'use client'
 import { use, useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+
 
 
 //TODO: init firebase
@@ -39,41 +42,21 @@ const NotificationSender = () => {
     const messaging = getMessaging();
       onMessage(messaging, (payload) => {
         console.log('Message received. ', payload);
-        // setMessage(payload.notification?.body || '')
       })
 
       navigator.serviceWorker.ready.then((registration) => {
-        // You now have access to the ServiceWorkerRegistration object
         console.log('Service Worker Registered with:', registration);
-
-        // You can use registration for push notifications, background sync, etc.
-        // For example, setting up push notifications:
-
 
         getToken(messaging, { vapidKey: vapidKey, serviceWorkerRegistration: registration }).then((currentToken) => {
           if (currentToken) {
             console.log('Token: ', currentToken);
-            // sendTokenToServer(currentToken);
-            // updateUIForPushEnabled(currentToken);
           }
           setToken(currentToken)
         }
         ).catch((err) => {
           console.log('An error occurred while retrieving token. ', err);
-          // showToken('Error retrieving registration token. ', err);
-          // setTokenSentToServer(false);
         });
-        // registration.pushManager.subscribe({
-        //   userVisibleOnly: true,
-        //   // Your application server key here
-        //   applicationServerKey: '<VAPID Public Key>'
-        // }).then((subscription) => {
-        //   // Handle subscription object
-        //   console.log('Push Subscription:', subscription);
-        // }).catch((error) => {
-        //   // Handle errors
-        //   console.error('Push Subscription error:', error);
-        // });
+
       });
 
     } else {
@@ -81,24 +64,21 @@ const NotificationSender = () => {
     }
 
   }, []);
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(token);
+      window.alert('Token copied to clipboard');
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  }
 
-  // useEffect(() => {
-  //   if (Notification.permission === 'granted') {
-  //     const intervalId = setInterval(() => {
-  //       new Notification('Hello!', {
-  //         body: 'This is a notification from your PWA.',
-  //         // include any other notification options you want
-  //       });
-  //     }, 60000);
-
-  //     // Clear interval on component unmount
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, []);
-
-  return (
-    <div>
-      <p>Token: {token}</p>
+return (
+    <div className='flex m-2'>
+      <p className='break-all text-xs'>{token}</p>
+      <div>
+        <FontAwesomeIcon icon={faCopy} onClick={copyToClipboard} className='cursor-pointer ml-2' />
+      </div>
     </div>
   );
 };

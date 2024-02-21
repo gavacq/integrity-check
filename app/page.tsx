@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import NotificationPermission from "../components/NotificationPermission";
 import NotificationSender from "../components/NotificationSender";
-import StarRating from "../components/Score";
+import StarRating from "../components/StarRating";
+import Ratings from "components/Ratings";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -9,11 +10,21 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div >
-      <h1 className="text-3xl font-bold underline">Integrity Check v0.1</h1>
+    <div className="flex flex-col grow items-center">
+      <h1 className="text-3xl font-bold mt-6 text-lunar-green-300">Integrity Check</h1>
       <NotificationPermission />
-      <NotificationSender />
-      <StarRating />
+      <div className="grow flex flex-col justify-center">
+        <Ratings categories={[
+          "Exercise",
+          "Diet",
+          "Sleep",
+          "Work",
+          "Relationships",
+        ]} />
+      </div>
+      <div className="bg-shuttle-gray-800 rounded mt-auto w-5/6">
+        <NotificationSender />
+      </div>
     </div>
   );
 }

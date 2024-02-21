@@ -27,10 +27,10 @@ html {
   height: 100%;
   box-sizing: border-box;
   touch-action: manipulation;
-  font-feature-settings:
+  /* font-feature-settings:
     'case' 1,
     'rlig' 1,
-    'calt' 0;
+    'calt' 0; */
 }
 
 body {
@@ -44,7 +44,7 @@ body {
   margin: 0;
 }
 
-.custom-background {
+.custom-background-gradient {
   background: radial-gradient(
     circle at center,
     theme('colors.black-pearl.950') 5%,

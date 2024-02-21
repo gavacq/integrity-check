@@ -112,6 +112,7 @@ module.exports = {
           '800': '#322ca7',
           '900': '#2d2b84',
           '950': '#0c0b21',
+          'light': '#33324e'
         },
         'blue-charcoal': {
           '50': '#effafc',
