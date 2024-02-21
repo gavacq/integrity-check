@@ -10,6 +10,17 @@ declare const self: ServiceWorkerGlobalScope & {
 // Anything random.
 const revision = crypto.randomUUID();
 
+self.addEventListener('push', function(event) {
+  const payload = event.data?.json() as { notification: { title: string; body: string } } | undefined;
+  const options = {
+    body: payload?.notification.body || 'Some default message',
+    icon: 'path/to/icon.png',
+    badge: 'path/to/badge.png'
+  };
+
+  event.waitUntil(self.registration.showNotification(payload?.notification.title || 'Default title', options));
+});
+
 installSerwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
