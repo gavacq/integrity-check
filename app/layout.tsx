@@ -30,16 +30,30 @@ export const metadata: Metadata = {
 // export const viewport: Viewport = {
 //   themeColor: "rgb(23, 23, 23)",
 // };
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // maximumScale: 1, // this causes a vertical scrollbar to appear
+  minimumScale: 1,
+  userScalable: false,
+  // Also supported by less commonly used
+  // interactiveWidget: 'resizes-visual',
+}
+
+
+
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="en">
       <head>
       </head>
       {/* <body className="h-screen bg-gradient-to-b from-ebony-950 from-70% to-black-pearl-950">{children}</body> */}
       <body>
-        <div className="min-h-screen">
-          {children}
+        <div className="flex custom-background min-h-screen">
+          <main className="flex-grow">
+            {children}
+          </main>
         </div>
       </body>
     </html>

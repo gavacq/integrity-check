@@ -43,3 +43,13 @@ body {
   min-height: 100%;
   margin: 0;
 }
+
+.custom-background {
+  background: radial-gradient(
+    circle at center,
+    theme('colors.black-pearl.950') 5%,
+    theme('colors.ebony.950') 70%
+  );
+}
+
+
