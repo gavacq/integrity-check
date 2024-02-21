@@ -30,16 +30,18 @@ const vapidKey = "BN-psw5wAdIvqiL42o1H7u1EquxKElIImEjbUVEstE2E-KczINmSdmPqplsPEh
 
 const NotificationSender = () => {
   const [message, setMessage] = useState('')
+  const [token, setToken] = useState('')
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
 
 
     const messaging = getMessaging();
-onMessage(messaging, (payload) => {
-  console.log('Message received. ', payload);
-  // setMessage(payload.notification?.body || '')
-})
+      onMessage(messaging, (payload) => {
+        console.log('Message received. ', payload);
+        // setMessage(payload.notification?.body || '')
+      })
+
       navigator.serviceWorker.ready.then((registration) => {
         // You now have access to the ServiceWorkerRegistration object
         console.log('Service Worker Registered with:', registration);
@@ -54,6 +56,7 @@ onMessage(messaging, (payload) => {
             // sendTokenToServer(currentToken);
             // updateUIForPushEnabled(currentToken);
           }
+          setToken(currentToken)
         }
         ).catch((err) => {
           console.log('An error occurred while retrieving token. ', err);
@@ -93,7 +96,13 @@ onMessage(messaging, (payload) => {
   //   }
   // }, []);
 
-  return null;
+  return (
+    <div>
+      <h1>Notification Sender</h1>
+      <p>Token: {token}</p>
+      <p>Message: {message}</p>
+    </div>
+  );
 };
 
 export default NotificationSender;
