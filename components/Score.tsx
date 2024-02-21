@@ -29,6 +29,7 @@ const StarRating = () => {
               onMouseLeave={() => setHover(0)}
               onClick={() => setRating(ratingValue)}
               style={{ cursor: 'pointer' }}
+              size="3x" // Increase the size of the stars
             />
           </label>
         );
