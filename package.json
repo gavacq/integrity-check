@@ -13,6 +13,7 @@
   "dependencies": {
     "@serwist/next": "latest",
     "@serwist/sw": "latest",
+    "firebase": "^10.8.0",
     "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -22,6 +23,7 @@
     "@types/node": "20.10.5",
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
+    "firebase-tools": "^13.3.0",
     "typescript": "5.3.3"
   }
 }

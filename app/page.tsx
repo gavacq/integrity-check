@@ -11,7 +11,7 @@ export default function Page() {
     <>
       <h1>Next.js + Serwist</h1>
       <NotificationPermission />
-      <NotificationSender />
+      {/* <NotificationSender /> */}
     </>
   );
 }
