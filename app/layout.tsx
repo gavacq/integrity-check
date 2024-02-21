@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "rgb(23, 23, 23)",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             }
             `}</style>
       </head>
-      <body>{children}</body>
+      <body className="bg-gradient-to-b from-ebony-950 from-70% to-black-pearl-950">{children}</body>
     </html>
   );
 }
