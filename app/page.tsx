@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import NotificationPermission from "../components/NotificationPermission";
 import NotificationSender from "../components/NotificationSender";
+import StarRating from "../components/Score";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -9,9 +10,10 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>Next.js + Serwist</h1>
+      <h1>Integrity Check v0.1</h1>
       <NotificationPermission />
       <NotificationSender />
+      <StarRating />
     </>
   );
 }
