@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import "./global.css"
 
 const APP_NAME = "Serwist example";
 const APP_DESCRIPTION = "This is an example of using Serwist with Next.js";

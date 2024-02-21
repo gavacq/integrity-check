@@ -98,7 +98,6 @@ const NotificationSender = () => {
 
   return (
     <div>
-      <h1>Notification Sender</h1>
       <p>Token: {token}</p>
     </div>
   );
