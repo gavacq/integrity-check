@@ -64,7 +64,7 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
       </>
       )}
       {done && (
-          <h2 className='text-lunar-green-300 font-bold text-xl w-1/2'>🎉 Congratulations on putting in the work. See you tomorrow! </h2>
+          <h2 className='text-lunar-green-300 font-bold text-xl'>🎉 Congratulations on putting in the work. See you tomorrow! </h2>
       )}
     </div>
   );
