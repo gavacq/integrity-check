@@ -4,7 +4,7 @@ import "./global.css"
 import NavBar from "components/NavBar";
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config.cjs'
-import Footer from "components/Footer";
+import IconTray from "components/IconTray";
 import NotificationSender from "components/NotificationSender";
 
 
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main className="flex grow">
             {children}
           </main>
-          <Footer />
+          <IconTray />
         </div>
       </body>
     </html>
