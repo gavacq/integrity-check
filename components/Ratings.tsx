@@ -112,7 +112,9 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
         </div>
       )}
 
+      {done && (
       <RatingsReview handleClick={() => setReviewOpen(!reviewOpen)} />
+      )}
       {!submitted && done && <SubmitRatings handleSubmit={handleSubmit}/>}
     </div>
   );

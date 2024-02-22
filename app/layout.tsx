@@ -4,6 +4,8 @@ import "./global.css"
 import NavBar from "components/NavBar";
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config.cjs'
+import Footer from "components/Footer";
+import NotificationSender from "components/NotificationSender";
 
 
 const APP_NAME = "Serwist example";
@@ -55,9 +57,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <div className="flex flex-col min-h-screen custom-background-gradient">
           <NavBar />
-          <main className="flex grow">
+          <main className="flex flex-col grow">
             {children}
           </main>
+          <Footer />
         </div>
       </body>
     </html>
