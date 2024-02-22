@@ -13,10 +13,9 @@ const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, s
     <div className='my-3 space-x-1'>
       {[...Array(5)].map((star, i) => {
         const ratingValue = i + 1;
+        if (active) {
+          return (
 
-        return (
-          <>
-          {active ? (
             <label key={i}>
               <input
                 type="radio"
@@ -35,16 +34,19 @@ const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, s
                 size={starSize} // Increase the size of the stars
               />
             </label>
-          ) : (
+          )
+        }
+
+        return (
+
             <FontAwesomeIcon
               icon={ratingValue <= rating.value ? faStar : farStar}
               style={{ cursor: 'pointer' }}
               className='text-outer-space-500'
               size={starSize} // Increase the size of the stars
             />
-          )}
-          </>
-        );
+        )
+
       })}
     </div>
   );

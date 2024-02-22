@@ -99,7 +99,7 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
           <h2 className='text-lunar-green-300 font-bold text-2xl'>Review</h2>
           <div className='table w-full'>
             {Object.values(ratings).map((rating, i) => (
-              <div key={i} className='table-row'>
+              <div key={rating.name} className='table-row'>
                 <div onClick={() => !submitted && handleSelectCategory(rating.name)} className='table-cell p-2'>
                   <h3 className='text-lunar-green-300 font-bold text-lg'>{rating.name}</h3>
                 </div>
