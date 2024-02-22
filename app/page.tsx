@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 const categories = [
   "Exercise",
   "Diet",
-  "Sleep",
-  "Work",
-  "Relationships",
+  // "Sleep",
+  // "Work",
+  // "Relationships",
 ];
 
 export default function Page() {

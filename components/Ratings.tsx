@@ -2,8 +2,10 @@
 // a component that accepts a list of categories and renders a StarRating component for each category.
 // one StarRating is displayed at a time, and once the user has rated the category, the next category is displayed.
 
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import StarRating from './StarRating';
+import RatingsReview from './RatingsReview';
+import SubmitRatings from './SubmitRatings';
 
 export interface Rating {
   name: string;
@@ -21,18 +23,28 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
     return acc
   }, {} as Record<string, Rating>))
   const [acceptRating, setAcceptRating] = useState(false)
+  const [reviewOpen, setReviewOpen] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
-  const handleRating = (rating: number) => {
-    setRatings((prevRatings) => {
-      const updatedRatings = { ...prevRatings };
-      updatedRatings[currentCategory] = {
-        name: currentCategory,
-        value: rating,
-      };
-      return updatedRatings;
-    });
-    setAcceptRating(false);
-  };
+  const setRatingForCategory = (category: string) => {
+    return (rating: number) => {
+      setRatings((prevRatings) => {
+        const updatedRatings = { ...prevRatings };
+        updatedRatings[category] = {
+          name: category,
+          value: rating,
+        };
+        return updatedRatings;
+      });
+      setAcceptRating(false);
+    }
+  }
+
+ useEffect(() => {
+    const allComplete = Object.values(ratings).every(rating => rating.value > 0);
+    setDone(allComplete);
+  }, [ratings]);
+
 
   const handleAcceptRating = () => {
     setAcceptRating(true);
@@ -40,35 +52,68 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
     if (nextCategoryIndex < categories.length) {
       setCurrentCategory(categories[nextCategoryIndex]);
     } else {
-      setDone(true)
+      setReviewOpen(true)
     }
+  }
+
+  const handleSelectCategory = (category: string) => {
+    setReviewOpen(false);
+    setCurrentCategory(category);
+  }
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+    setReviewOpen(false);
   }
 
   return (
     <div className='flex flex-col items-center w-full'>
-      {!done && (
+      {!submitted && !reviewOpen && (
       <>
 
       <div className='flex flex-col items-center'>
       <h2 className='text-lunar-green-300 font-bold text-2xl'>{currentCategory}</h2>
-      <StarRating rating={ratings[currentCategory]} setRating={handleRating} />
+      <StarRating rating={ratings[currentCategory]} setRating={setRatingForCategory(currentCategory)} starSize='3x' active={!submitted} />
       </div>
       
-        <div className='h-10 w-full flex justify-center items-center my-4'>
+      {!done && (<div className='h-10 w-full flex justify-center items-center my-4'>
       {!acceptRating && ratings[currentCategory].value > 0 && (
-          <button className="bg-lunar-green-300 hover:bg-lunar-green-400 rounded-lg w-1/4 h-8" onClick={handleAcceptRating}>
+          <button className="bg-lunar-green-300 hover:bg-lunar-green-400 rounded-lg px-2 h-8" onClick={handleAcceptRating}>
             Next
           </button>
       )}
         </div>
+      )}
       </>
       )}
-      {done && (
+
+      {submitted && !reviewOpen && (
         <div className='flex flex-col items-center'>
-          <h2 className='text-lunar-green-300 font-bold text-sm sm:text-lg'>🎉 Congratulations on putting in the work </h2>
-          <p className='text-lunar-green-300 font-bold text-sm sm:text-lg'>See you tomorrow! </p>
+          <h2 className='text-lunar-green-300 font-bold text-sm sm:text-lg'>🎉 Congratulations on putting in the work!</h2>
+          <p className='text-lunar-green-300 font-bold text-sm sm:text-lg'>Check back in tomorrow.</p>
         </div>
       )}
+
+      {reviewOpen && (
+        <div className='flex flex-col items-center'>
+          <h2 className='text-lunar-green-300 font-bold text-2xl'>Review</h2>
+          <div className='table w-full'>
+            {Object.values(ratings).map((rating, i) => (
+              <div key={i} className='table-row'>
+                <div onClick={() => !submitted && handleSelectCategory(rating.name)} className='table-cell p-2'>
+                  <h3 className='text-lunar-green-300 font-bold text-lg'>{rating.name}</h3>
+                </div>
+                <div className='table-cell p-2'>
+                  <StarRating rating={rating} setRating={setRatingForCategory(rating.name)} starSize='1x' active={!submitted} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <RatingsReview handleClick={() => setReviewOpen(!reviewOpen)} />
+      {!submitted && done && <SubmitRatings handleSubmit={handleSubmit}/>}
     </div>
   );
 };

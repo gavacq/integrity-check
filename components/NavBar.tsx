@@ -16,7 +16,7 @@ return (
 <div className="grid grid-cols-6 items-center w-full px-2 mt-6">
 
   {/* Invisible Spacer */}
-  <h1 className="text-lg sm:text-2xl font-bold text-lunar-green-300 col-start-2 col-end-6 justify-self-center">Integrity Check</h1>
+  <h1 className="text-md sm:text-2xl font-bold text-lunar-green-300 col-start-2 col-end-6 justify-self-center">Integrity Check</h1>
 
       {/* Overlay */}
       {isMenuOpen && (
