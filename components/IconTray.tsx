@@ -10,20 +10,19 @@ import { usePathname } from 'next/navigation'
 const Footer = () => {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(pathname.replace('/', ''));
-  console.log(pathname)
 
   return (
-<div className="flex justify-around items-center text-shuttle-gray-200 py-3 sticky bottom-0 w-full bg-ebony-950 h-24">
-  <Link href="/analytics" onClick={() => setActiveTab('analytics')}>
-    <FontAwesomeIcon icon={faChartSimple} size="2xl" className={`${activeTab === 'analytics' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
-  </Link>
-  <Link href="/" onClick={() => setActiveTab('home')}>
-    <FontAwesomeIcon icon={faHouse} size="2xl" className={`${activeTab === 'home' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
-  </Link>
-  <Link href="/categories" onClick={() => setActiveTab('categories')}>
-    <FontAwesomeIcon icon={faLayerGroup} size="2xl" className={`${activeTab === 'categories' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
-  </Link>
-</div>
+  <div className="grid grid-cols-3 items-center text-shuttle-gray-200 sticky bottom-0 w-full bg-ebony-950 h-24 z-50">
+    <Link href="/analytics" onClick={() => setActiveTab('analytics')} className='text-center'>
+      <FontAwesomeIcon icon={faChartSimple} size="xl" className={`${activeTab === 'analytics' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
+    </Link>
+    <Link href="/" onClick={() => setActiveTab('home')} className='text-center'>
+      <FontAwesomeIcon icon={faHouse} size="xl" className={`${activeTab === 'home' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
+    </Link>
+    <Link href="/categories" onClick={() => setActiveTab('categories')} className='text-center'>
+      <FontAwesomeIcon icon={faLayerGroup} size="xl" className={`${activeTab === 'categories' ? 'text-blue-charcoal-500': 'text-shuttle-gray-200'}`}/>
+    </Link>
+  </div>
   );
 }
 
