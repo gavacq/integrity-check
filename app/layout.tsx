@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./global.css"
+import NavBar from "components/NavBar";
 
 const APP_NAME = "Serwist example";
 const APP_DESCRIPTION = "This is an example of using Serwist with Next.js";
@@ -47,7 +48,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <div className="flex min-h-screen custom-background-gradient">
+        <div className="flex flex-col min-h-screen custom-background-gradient">
+          <NavBar />
           <main className="flex grow">
             {children}
           </main>

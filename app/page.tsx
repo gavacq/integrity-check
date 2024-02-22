@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="flex flex-col grow items-center">
-      <NavBar />
+      {/* <NavBar /> */}
       {/* <NotificationPermission /> */}
       <div className="grow flex flex-col justify-center">
         <Ratings categories={[
