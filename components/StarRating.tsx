@@ -40,6 +40,7 @@ const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, s
         return (
 
             <FontAwesomeIcon
+              key={i}
               icon={ratingValue <= rating.value ? faStar : farStar}
               style={{ cursor: 'pointer' }}
               className='text-outer-space-500'

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DBSchema, openDB } from 'idb';
 import EmojiPicker, { Emoji } from 'emoji-picker-react'
 
-interface MyDB extends DBSchema {
+export interface MyDB extends DBSchema {
   'categories': {
     value: {
       name: string;
@@ -17,7 +17,14 @@ interface MyDB extends DBSchema {
   // You can add more stores here if needed
 }
 
-async function setupDB() {
+export interface Category {
+  name: string;
+  weight: number;
+  emoji: string;
+  id: string;
+}
+
+export async function setupDB() {
   const db = await openDB<MyDB>('MyDatabase', 1, {
     upgrade(db) {
       // Create a store of objects

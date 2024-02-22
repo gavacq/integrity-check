@@ -20,7 +20,7 @@ export default function Page() {
       {/* <NavBar /> */}
       {/* <NotificationPermission /> */}
       <div className="grow flex flex-col justify-center">
-        <Ratings categories={categories} />
+        <Ratings />
       </div>
         <NotificationSender />
     </div>

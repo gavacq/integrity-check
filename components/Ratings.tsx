@@ -6,18 +6,21 @@ import React, { use, useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
+import { Category, setupDB } from './Categories';
+import { openDB } from 'idb';
 
 export interface Rating {
   name: string;
   value: number;
 }
 
-const Ratings = ({ categories }: { categories: string[]} ) => {
-  const [currentCategory, setCurrentCategory] = useState(categories[0])
+const Ratings = () => {
+  const [categories, setCategories] = useState<Array<Category>>([]);
+  const [currentCategory, setCurrentCategory] = useState<Category | undefined>(undefined)
   const [done, setDone] = useState(false)
   const [ratings, setRatings] = useState(categories.reduce((acc, category) => {
-    acc[category] = {
-      name: category,
+    acc[category.name] = {
+      name: category.name,
       value: 0
     }
     return acc
@@ -25,6 +28,34 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
   const [acceptRating, setAcceptRating] = useState(false)
   const [reviewOpen, setReviewOpen] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+ useEffect(() => {
+    const fetchData = async () => {
+    // Use this function to setup your DB
+      await setupDB()
+      // Open the database
+      const db = await openDB('MyDatabase', 1); // Replace with your database name and version
+
+      // Read all categories from the store
+      const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
+      const store = tx.objectStore('categories');
+      const allCategories = await store.getAll() as Array<Category>
+
+      setCategories(allCategories);
+      setRatings(allCategories.reduce((acc, category) => {
+        acc[category.name] = {
+          name: category.name,
+          value: 0
+        }
+        return acc
+      }, {} as Record<string, Rating>))
+      setCurrentCategory(allCategories[0]);
+    };
+
+    fetchData();
+  }, []);
+
+
 
   const setRatingForCategory = (category: string) => {
     return (rating: number) => {
@@ -48,7 +79,8 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
 
   const handleAcceptRating = () => {
     setAcceptRating(true);
-    const nextCategoryIndex = categories.indexOf(currentCategory) + 1;
+    // get the index of the current category
+    const nextCategoryIndex = categories.findIndex(category => category.id === currentCategory?.id) + 1;
     if (nextCategoryIndex < categories.length) {
       setCurrentCategory(categories[nextCategoryIndex]);
     } else {
@@ -58,12 +90,16 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
 
   const handleSelectCategory = (category: string) => {
     setReviewOpen(false);
-    setCurrentCategory(category);
+    setCurrentCategory(categories.find(c => c.name === category))
   }
 
   const handleSubmit = () => {
     setSubmitted(true);
     setReviewOpen(false);
+  }
+
+  if (categories.length === 0 || Object.keys(ratings).length === 0 || currentCategory === undefined) {
+    return <div className='text-lunar-green-300'>No Categories found.</div>
   }
 
   return (
@@ -72,12 +108,12 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
       <>
 
       <div className='flex flex-col items-center'>
-      <h2 className='text-lunar-green-300 font-bold text-2xl'>{currentCategory}</h2>
-      <StarRating rating={ratings[currentCategory]} setRating={setRatingForCategory(currentCategory)} starSize='3x' active={!submitted} />
+      <h2 className='text-lunar-green-300 font-bold text-2xl'>{currentCategory.emoji + ' ' + currentCategory.name}</h2>
+      <StarRating rating={ratings[currentCategory.name]} setRating={setRatingForCategory(currentCategory.name)} starSize='3x' active={!submitted} />
       </div>
       
       {!done && (<div className='h-10 w-full flex justify-center items-center my-4'>
-      {!acceptRating && ratings[currentCategory].value > 0 && (
+      {!acceptRating && ratings[currentCategory.name].value > 0 && (
           <button className="bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-8" onClick={handleAcceptRating}>
             Next
           </button>
@@ -115,7 +151,11 @@ const Ratings = ({ categories }: { categories: string[]} ) => {
       {done && (
       <RatingsReview handleClick={() => setReviewOpen(!reviewOpen)} />
       )}
-      {!submitted && done && <SubmitRatings handleSubmit={handleSubmit}/>}
+      <div className='h-10 w-full flex justify-center items-center my-4'>
+        {!submitted && done && (
+          <SubmitRatings handleSubmit={handleSubmit}/>
+        )}
+    </div>
     </div>
   );
 };
