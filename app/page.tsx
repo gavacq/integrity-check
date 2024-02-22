@@ -26,6 +26,6 @@ export default function Page() {
         <Ratings categories={categories} />
       </div>
         <NotificationSender />
-      </div>
+    </div>
   );
 }

@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <div className="flex flex-col min-h-screen custom-background-gradient">
           <NavBar />
-          <main className="flex flex-col grow">
+          <main className="flex grow">
             {children}
           </main>
           <Footer />

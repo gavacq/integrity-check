@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-<div className="flex justify-around items-center text-shuttle-gray-200 py-3 fixed bottom-0 w-full bg-ebony-950 h-24">
+<div className="flex justify-around items-center text-shuttle-gray-200 py-3 sticky bottom-0 w-full bg-ebony-950 h-24">
   <Link href="/analytics">
     <FontAwesomeIcon icon={faChartSimple} size="lg" />
   </Link>
