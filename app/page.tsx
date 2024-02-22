@@ -17,10 +17,10 @@ export default function Page() {
       <div className="grow flex flex-col justify-center">
         <Ratings categories={[
           "Exercise",
-          "Diet",
-          "Sleep",
-          "Work",
-          "Relationships",
+          // "Diet",
+          // "Sleep",
+          // "Work",
+          // "Relationships",
         ]} />
       </div>
       <div className="bg-shuttle-gray-800 rounded mt-auto w-5/6">
