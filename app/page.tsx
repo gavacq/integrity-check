@@ -25,9 +25,7 @@ export default function Page() {
       <div className="grow flex flex-col justify-center">
         <Ratings categories={categories} />
       </div>
-      <div className="bg-shuttle-gray-800 rounded mt-auto w-5/6">
         <NotificationSender />
       </div>
-    </div>
   );
 }

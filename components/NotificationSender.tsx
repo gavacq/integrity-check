@@ -73,13 +73,22 @@ const NotificationSender = () => {
     }
   }
 
+  const [showToken, setShowToken] = useState(false);
+
 return (
-    <div className='flex m-2'>
+  <>
+    <p className='text-xs cursor-pointer text-lunar-green-300' onClick={() => setShowToken(!showToken)}>
+      {showToken ? 'Hide Token': 'Show Token'}
+    </p>
+      <div className="bg-shuttle-gray-800 rounded mt-auto w-5/6">
+    {showToken && (<div className='flex m-2'>
       <p className='break-all text-xs'>{token}</p>
       <div>
         <FontAwesomeIcon icon={faCopy} onClick={copyToClipboard} className='cursor-pointer ml-2' />
       </div>
+    </div>)}
     </div>
+  </>
   );
 };
 
