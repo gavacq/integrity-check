@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import NotificationPermission from "../components/NotificationPermission";
-import NotificationSender from "../components/NotificationSender";
-import StarRating from "../components/StarRating";
+import NotificationSender from "components/NotificationSender";
 import Ratings from "components/Ratings";
-import NavBar from "components/NavBar";
 
 export const metadata: Metadata = {
   title: "Home",

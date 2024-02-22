@@ -8,8 +8,8 @@ import IconTray from "components/IconTray";
 import NotificationSender from "components/NotificationSender";
 
 
-const APP_NAME = "Serwist example";
-const APP_DESCRIPTION = "This is an example of using Serwist with Next.js";
+const APP_NAME = "Integrity Check";
+const APP_DESCRIPTION = "Quantify and analyze your personal growth through daily integrity ratings"
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,

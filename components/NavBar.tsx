@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser  } from '@fortawesome/free-regular-svg-icons';
 
 const NavBar = () => {
-
-
 return (
 <div className="grid grid-cols-6 items-center w-full px-2 sticky top-0 bg-ebony-950 h-24 z-40">
 
