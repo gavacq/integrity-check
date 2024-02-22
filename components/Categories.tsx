@@ -38,20 +38,29 @@ async function setupDB() {
 
 // Now your db object is strongly typed
 // Example of adding a category
-async function addCategory(name: string, weight: number, emoji: string) {
+async function addCategory(category: { name: string, weight: number, emoji: string, id?: string}) {
   const db = await openDB<MyDB>('MyDatabase', 1);
-  await db.add('categories', { name, weight, emoji});
+  if (category.id) {
+    await db.put('categories', category);
+    return;
+  }
+  await db.add('categories', {
+    name: category.name,
+    weight: category.weight,
+    emoji: category.emoji,
+  });
 }
 
 
 const Categories = () => {
-  const [categories, setCategories] = useState<Array<{name: string, weight: number, emoji: string}>>([]);
+  const [categories, setCategories] = useState<Array<{name: string, weight: number, emoji: string, id: string}>>([]);
   const [showInputs, setShowInputs] = useState(false);
   const [newName, setNewName] = useState('');
   const [newWeight, setNewWeight] = useState('');
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [newKey, setNewKey] = useState<string | undefined>(undefined)
 
 
   useEffect(() => {
@@ -75,11 +84,18 @@ const Categories = () => {
 
  const handleAddCategory = async () => {
     try {
-      await addCategory(newName, Number(newWeight), newEmoji);
+      await addCategory({
+        name: newName,
+        weight: parseInt(newWeight),
+        emoji: newEmoji,
+        id: newKey
+      });
     } catch (error) {
       console.error('Error adding category', error);
+      setUpsertError('Error adding category: ' + error);
     }
     
+    setNewKey(undefined);
     setNewName('');
     setNewWeight('');
     setShowInputs(false);
@@ -105,25 +121,39 @@ const Categories = () => {
     }
   };
 
+  const handleEditCategory = (category) => {
+    setNewEmoji(category.emoji);
+    setNewName(category.name);
+    setNewWeight(category.weight);
+    setNewKey(category.id);
+    setShowInputs(true);
+  }
+
+  const HandleClickAddCategory = async () => {
+    setShowInputs(!showInputs);
+    setUpsertError('');
+  }
+
   return (
     <div className='flex flex-col mt-4 w-2/3'>
       {!showInputs && (<table className='text-lunar-green-300 border-collapse'>
         <thead>
-          <tr className='border-b border-lunar-green-200 '>
+          <tr className='border-b border-lunar-green-200'>
             <th className='w-2/3 text-left'>Name</th>
             <th className='w-1/2 text-left'>Weight</th>
           </tr>
         </thead>
         <tbody className='text-lunar-green-100'>
           {categories.map((category, index) => (
-      <tr key={index} className='border-b border-lunar-green-200 h-12'>
+      <tr key={index} className='border-b border-lunar-green-200 h-12' onClick={() => handleEditCategory(category)}>
         <td className='border-r border-lunar-green-200'>{category.emoji + ' ' + category.name}</td>
         <td className='pl-2'>{category.weight}</td>
       </tr>
           ))}
         </tbody>
       </table>)}
-      <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => setShowInputs(!showInputs)}>{showInputs ? 'Close' : 'Add Category'}</button>
+      <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button>
+      {!showInputs && upsertError && (<div className='text-red-500'>{upsertError}</div>)}
       {showInputs && (
         <>
         <table className='w-full my-2'>
