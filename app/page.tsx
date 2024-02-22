@@ -9,19 +9,21 @@ export const metadata: Metadata = {
   title: "Home",
 };
 
+const categories = [
+  "Exercise",
+  "Diet",
+  "Sleep",
+  "Work",
+  "Relationships",
+];
+
 export default function Page() {
   return (
     <div className="flex flex-col grow items-center">
       {/* <NavBar /> */}
       {/* <NotificationPermission /> */}
       <div className="grow flex flex-col justify-center">
-        <Ratings categories={[
-          "Exercise",
-          // "Diet",
-          // "Sleep",
-          // "Work",
-          // "Relationships",
-        ]} />
+        <Ratings categories={categories} />
       </div>
       <div className="bg-shuttle-gray-800 rounded mt-auto w-5/6">
         <NotificationSender />

@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./global.css"
 import NavBar from "components/NavBar";
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../tailwind.config.cjs'
+
 
 const APP_NAME = "Serwist example";
 const APP_DESCRIPTION = "This is an example of using Serwist with Next.js";
@@ -31,12 +34,14 @@ export const metadata: Metadata = {
 // export const viewport: Viewport = {
 //   themeColor: "rgb(23, 23, 23)",
 // };
+const fullConfig = resolveConfig(tailwindConfig)
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   // maximumScale: 1, // this causes a vertical scrollbar to appear
   minimumScale: 1,
   userScalable: false,
+  themeColor: fullConfig.theme.colors['ebony'][950],
   // Also supported by less commonly used
   // interactiveWidget: 'resizes-visual',
 }

@@ -12,21 +12,17 @@ const NavBar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleClickOutside = (event) => {
-      setIsMenuOpen(false);
-  };
-
 return (
-<div className="grid grid-cols-6 items-center w-full px-6 mt-6">
+<div className="grid grid-cols-6 items-center w-full px-2 mt-6">
 
   {/* Invisible Spacer */}
-  <h1 className="sm:text-2xl font-bold text-lunar-green-300 col-start-2 col-end-6 justify-self-center">Integrity Check</h1>
+  <h1 className="text-lg sm:text-2xl font-bold text-lunar-green-300 col-start-2 col-end-6 justify-self-center">Integrity Check</h1>
 
       {/* Overlay */}
       {isMenuOpen && (
         <div 
           className="fixed inset-0 bg-black opacity-50 z-10"
-          onClick={handleClickOutside}
+          onClick={toggleMenu}
         ></div>
       )}
 
@@ -42,15 +38,16 @@ return (
         </div>
 
         {/* Links - Shown when menu is open */}
-        <div className={`${isMenuOpen ? 'flex flex-col items-end bg-black-pearl-950 rounded-lg absolute -top-2 -right-4 py-2 pr-4 pl-4' : 'hidden'}`}>
+        <div className={`${isMenuOpen ? 'flex flex-col items-end bg-black-pearl-950 rounded-lg absolute -top-2 -right-2 py-2 pr-2 pl-4' : 'hidden'}`}>
 
         <div onClick={toggleMenu} className="cursor-pointer text-lunar-green-300 text-4xl">
           <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
         </div>
         <div className='flex flex-col items-end space-y-2 py-2'>
 
-          <Link href="/" className='text-shuttle-gray-200 bg-black-pearl-900 hover:bg-black-pearl-800 w-full rounded-md text-center px-5'>Home</Link>
-          <Link href="/analytics" className='text-shuttle-gray-200 bg-black-pearl-900  hover:bg-black-pearl-800  w-full rounded-md text-center'>Analytics</Link>
+
+          <Link href="/" className='text-shuttle-gray-200 bg-black-pearl-900 hover:bg-black-pearl-800 w-full rounded-md text-center px-5' onClick={toggleMenu}>Home</Link>
+          <Link href="/analytics" className='text-shuttle-gray-200 bg-black-pearl-900  hover:bg-black-pearl-800  w-full rounded-md text-center' onClick={toggleMenu}>Analytics</Link>
         </div>
         </div>
         </div>
