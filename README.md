@@ -1,4 +1,4 @@
 # Integrity Check
 
 ## Description
-A web app that allows users to quantify andy analyze their personal growth through daily integrity ratings. 
+A web app that allows users to quantify and analyze their personal growth through daily integrity ratings. 
