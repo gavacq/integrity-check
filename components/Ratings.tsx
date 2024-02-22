@@ -8,6 +8,9 @@ import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
 import { Category, setupDB } from './Categories';
 import { openDB } from 'idb';
+import Link from 'next/link';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface Rating {
   name: string;
@@ -98,8 +101,19 @@ const Ratings = () => {
     setReviewOpen(false);
   }
 
-  if (categories.length === 0 || Object.keys(ratings).length === 0 || currentCategory === undefined) {
-    return <div className='text-lunar-green-300'>No Categories found.</div>
+  if (categories.length === 0) {
+    return (
+      <div className='flex flex-col items-center'>
+        <h1 className='text-lunar-green-300'>Create a category</h1>
+        <Link href='/categories' className='my-4'>
+          <FontAwesomeIcon icon={faPlus} size='2x' className='text-revolver-300 cursor-pointer' />
+        </Link>
+      </div>
+    )
+  }
+
+  if (Object.keys(ratings).length === 0 || currentCategory === undefined) {
+    return <div className='text-lunar-green-300'>Loading...</div>
   }
 
   return (
