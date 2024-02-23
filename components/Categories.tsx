@@ -17,12 +17,6 @@ export interface MyDB extends DBSchema {
   // You can add more stores here if needed
 }
 
-export interface Category {
-  name: string;
-  weight: number;
-  emoji: string;
-  id: string;
-}
 
 export async function setupDB() {
   const db = await openDB<MyDB>('MyDatabase', 1, {
