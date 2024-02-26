@@ -13,17 +13,14 @@ const nextConfig = {
   rewrites: async () => {
     return {
       beforeFiles: [
-        // These rewrites are checked after headers/redirects
-        // and before all files including _next/public files which
-        // allows overriding page files
         {
-          source: '/__/auth',
-          destination: 'https://integrity-check-app.firebaseapp.com/__/auth',
+          source: '/__/auth/:path*',
+          destination: 'https://integrity-check-app.firebaseapp.com/__/auth/:path*',
         },
       ],
       afterFiles: [],
       fallback: [],
-    }
+    };
   },
 };
 
