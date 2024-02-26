@@ -19,9 +19,10 @@ export default function AuthProtected({ children }) {
   }, [isLoading, currentUser])
 
   return (
-    currentUser && (<div className="flex flex-col grow items-center py-4">
+    currentUser && (
+      <>
         {children}
-      </div>
+      </>
     )
   )
 }

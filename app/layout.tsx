@@ -6,6 +6,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config.cjs'
 import IconTray from "components/IconTray";
 import { AuthProvider } from "../providers/AuthContext";
+import AuthProtected from "components/AuthProtected";
 // import NotificationSender from "components/NotificationSender";
 
 
@@ -57,10 +58,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <div className="flex flex-col h-screen custom-background-gradient">
-          <NavBar />
-          <main className="flex grow">
-            {children}
-          </main>
+          <AuthProvider>
+            <NavBar />
+            <main className="flex grow">
+              {children}
+            </main>
+          </AuthProvider>
         </div>
       </body>
     </html>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { firebaseApp } from 'utils/firebase';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { usePathname, useRouter } from 'next/navigation';
@@ -10,6 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 interface AuthContextType {
   currentUser: User | null;
   isLoading: boolean;
+  auth: Auth;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,7 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ currentUser, isLoading }}>
+    <AuthContext.Provider value={{ currentUser, isLoading, auth }}>
       {children}
     </AuthContext.Provider>
   );

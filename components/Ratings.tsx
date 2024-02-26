@@ -104,7 +104,7 @@ const Ratings = () => {
 
   if (categories.length === 0) {
     return (
-      <div className='flex flex-col items-center'>
+      <div className='grow flex flex-col items-center'>
         <h1 className='text-lunar-green-300'>Create a category</h1>
         <Link href='/categories' className='my-4'>
           <FontAwesomeIcon icon={faPlus} size='2x' className='text-revolver-300 cursor-pointer' />
@@ -118,7 +118,7 @@ const Ratings = () => {
   }
 
   return (
-    <div className='flex flex-col items-center w-full'>
+    <div className='grow flex flex-col items-center justify-center w-full'>
       {!submitted && !reviewOpen && (
       <>
 

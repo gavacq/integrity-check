@@ -1,47 +1,56 @@
 'use client'
-import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult, signInWithPopup } from "firebase/auth";
 import { firebaseApp } from "utils/firebase";
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const LoginButton = () => {
   const auth = getAuth(firebaseApp);
+  const router = useRouter();
 
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    signInWithPopup(auth, provider).then((result) => {
+      console.log('signed in with google', result)
+      router.push('/') 
+    }).catch((error) => {
+      console.error('error signing in with google', error)
+    })
   }
 
-  useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (!result) {
-          console.warn('No redirect result');
-          return
-        }
+  // useEffect(() => {
+  //   // getRedirectResult(auth)
+  //   //   .then((result) => {
+  //   //     if (!result) {
+  //   //       console.warn('No redirect result');
+  //   //       return
+  //   //     }
 
-        // This gives you a Google Access Token. You can use it to access Google APIs.
-        // const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential.accessToken;
+  //   //     // This gives you a Google Access Token. You can use it to access Google APIs.
+  //   //     // const credential = GoogleAuthProvider.credentialFromResult(result);
+  //   //     // const token = credential.accessToken;
 
-        // The signed-in user info.
-        const user = result.user;
-        console.log('User:', user);
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        console.error('getRedirectResult error:', errorCode, errorMessage, email, credential);
-        // ...
-      });
-    }, [auth]);
+  //   //     // The signed-in user info.
+  //   //     const user = result.user;
+  //   //     console.log('User:', user);
+  //   //     // IdP data available using getAdditionalUserInfo(result)
+  //   //     // ...
+  //   //   }).catch((error) => {
+  //   //     // Handle Errors here.
+  //   //     const errorCode = error.code;
+  //   //     const errorMessage = error.message;
+  //   //     // The email of the user's account used.
+  //   //     const email = error.customData.email;
+  //   //     // The AuthCredential type that was used.
+  //   //     const credential = GoogleAuthProvider.credentialFromError(error);
+  //   //     console.error('getRedirectResult error:', errorCode, errorMessage, email, credential);
+  //   //     // ...
+  //   //   });
+  //   // }, [auth]);
+  //   getPopup
+  // }, []);
 
   
   return (
