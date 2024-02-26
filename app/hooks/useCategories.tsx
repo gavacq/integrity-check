@@ -2,12 +2,12 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
-// export interface Category {
-//   name: string;
-//   weight: number;
-//   emoji: string;
-//   id: string;
-// }
+export interface Category {
+  name: string;
+  weight: number;
+  emoji: string;
+  id: string;
+}
 
 // const initialState = {
 //   data: [],
