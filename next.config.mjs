@@ -10,6 +10,14 @@ const withSerwist = withSerwistInit({
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  rewrites: async () => {
+    return [
+      {
+        source: '/__/auth',
+        destination: 'https://integrity-check-app.firebaseapp.com/__/auth',
+      },
+    ]
+  },
 };
 
 export default withSerwist(nextConfig);

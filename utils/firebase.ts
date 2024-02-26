@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 export const firebaseConfig = {
   apiKey: "AIzaSyDPb9DcU0bx9awSFOVUT9Oyl8EOBTUuyyc",
-  authDomain: "integrity-check-app.firebaseapp.com",
+  authDomain: "integritycheck.app",
   projectId: "integrity-check-app",
   storageBucket: "integrity-check-app.appspot.com",
   messagingSenderId: "758073131895",

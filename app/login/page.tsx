@@ -1,7 +1,9 @@
+import LoginButton from "./LoginButton";
+
 export default function Page() {
   return (
-    <div className="flex flex-col grow items-center py-4">
-      <h1 className="text-lunar-green-300">Login</h1>
+    <div className="flex flex-col items-center justify-center grow">
+      <LoginButton />
     </div>
-  )
+  );
 }
