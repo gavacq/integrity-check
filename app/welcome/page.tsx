@@ -2,12 +2,13 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className="grow flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center grow">
       <h1 className="text-lunar-green-300 mb-4 text-2xl">Welcome to Integrity Check</h1>
-      <span>Self alignment quantified</span>
-      <Link href="/login" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Link href="/login">
+        <span className="bg-gradient-to-r from-revolver-800 to-ebony-800 text-white font-bold py-2 px-4 rounded h-10 w-40 flex items-center justify-center">
           Get Started
+        </span>
       </Link>
     </div>
-  )
+  );
 }
