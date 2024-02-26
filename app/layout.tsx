@@ -5,7 +5,8 @@ import NavBar from "components/NavBar";
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config.cjs'
 import IconTray from "components/IconTray";
-import NotificationSender from "components/NotificationSender";
+import { AuthProvider } from "../providers/AuthContext";
+// import NotificationSender from "components/NotificationSender";
 
 
 const APP_NAME = "Integrity Check";
@@ -60,7 +61,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main className="flex grow">
             {children}
           </main>
-          <IconTray />
         </div>
       </body>
     </html>

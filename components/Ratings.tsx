@@ -7,7 +7,7 @@ import StarRating from './StarRating';
 import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
 import { setupDB } from './Categories';
-import { Category } from 'utils/useCategories';
+import { Category } from 'hooks/useCategories';
 import { openDB } from 'idb';
 import Link from 'next/link';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
