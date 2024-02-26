@@ -3,10 +3,10 @@ import { getAuth, signInWithRedirect, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from "utils/firebase";
 
 const LoginButton = () => {
-  const auth = getAuth(firebaseApp);
-  const provider = new GoogleAuthProvider();
 
   const handleLogin = () => {
+    const auth = getAuth(firebaseApp);
+    const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
   }
   
