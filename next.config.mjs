@@ -12,6 +12,7 @@ const nextConfig = {
   reactStrictMode: true,
   rewrites: async () => {
     return {
+      // TODO: try just a simple rewrite instead of beforeFiles (thought ...not_found was causing issues)
       beforeFiles: [
         {
           source: '/__/auth/:path*',

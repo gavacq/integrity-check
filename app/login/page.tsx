@@ -1,3 +1,4 @@
+// TODO: just go straight to google signin ui from get started button
 import LoginButton from "./LoginButton";
 
 export default function Page() {
