@@ -16,14 +16,26 @@ import { on } from 'events';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// old config
+// const firebaseConfig = {
+//   apiKey: "AIzaSyD1t8HY1NFMlAIvgfztUYl6zZljxua_NdA",
+//   authDomain: "integrity-check-23bae.firebaseapp.com",
+//   projectId: "integrity-check-23bae",
+//   storageBucket: "integrity-check-23bae.appspot.com",
+//   messagingSenderId: "602712914688",
+//   appId: "1:602712914688:web:6801ca0c5cc4f50e5591e5",
+//   measurementId: "G-23XKXSLG59"
+// };
+
+// new config
 const firebaseConfig = {
-  apiKey: "AIzaSyD1t8HY1NFMlAIvgfztUYl6zZljxua_NdA",
-  authDomain: "integrity-check-23bae.firebaseapp.com",
-  projectId: "integrity-check-23bae",
-  storageBucket: "integrity-check-23bae.appspot.com",
-  messagingSenderId: "602712914688",
-  appId: "1:602712914688:web:6801ca0c5cc4f50e5591e5",
-  measurementId: "G-23XKXSLG59"
+  apiKey: "AIzaSyDPb9DcU0bx9awSFOVUT9Oyl8EOBTUuyyc",
+  authDomain: "integrity-check-app.firebaseapp.com",
+  projectId: "integrity-check-app",
+  storageBucket: "integrity-check-app.appspot.com",
+  messagingSenderId: "758073131895",
+  appId: "1:758073131895:web:76375c3035e7efab845772",
+  measurementId: "G-KLGY7KJ7L2"
 };
 
 // Initialize Firebase
