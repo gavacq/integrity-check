@@ -41,10 +41,10 @@ const ProfileMenu = () => {
             {currentUser && (
               <h3 className="text-lunar-green-400">Hello, {currentUser.displayName}</h3>
             )}
-            <Link href="/profile" className="text-white w-full text-center my-2 py-1 px-2
+            {/* <Link href="/profile" className="text-white w-full text-center my-2 py-1 px-2
             bg-revolver-900 rounded-md" onClick={() => setShowMenu(false)}>
               Profile
-            </Link>
+            </Link> */}
             {currentUser ? (
               <button className="text-white w-full my-2 py-1 px-2 bg-revolver-900 rounded-md" onClick={() => { handleSignOut()}}>Sign Out</button>) : (
               <button onClick={() => handleLogin()} className="bg-gradient-to-r from-revolver-800 to-ebony-800 text-white font-bold py-2 px-4 rounded h-10 w-75 flex items-center justify-center">

@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 
 const Footer = () => {
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState(pathname.replace('/', ''));
+  const [activeTab, setActiveTab] = useState(pathname.replace('/', '') || 'home');
 
   return (
   <div className="grid grid-cols-3 items-center text-shuttle-gray-200 sticky bottom-0 w-full bg-ebony-950 h-24 z-50">

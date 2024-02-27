@@ -1,60 +1,29 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { DBSchema, openDB } from 'idb';
 import EmojiPicker, { Emoji } from 'emoji-picker-react'
+import { getFirestore, collection, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
+import { firebaseApp } from 'utils/firebase';
+import { Category, getCategories } from 'hooks/useCategories';
 
-export interface MyDB extends DBSchema {
-  'categories': {
-    value: {
-      name: string;
-      weight: number;
-      emoji: string;
-    };
-    key: string;
-    // Define any indexes here if needed
-    indexes: { 'name': string };
-  };
-  // You can add more stores here if needed
-}
-
-
-export async function setupDB() {
-  const db = await openDB<MyDB>('MyDatabase', 1, {
-    upgrade(db) {
-      // Create a store of objects
-      const store = db.createObjectStore('categories', {
-        // The 'id' property of the object will be the key.
-        keyPath: 'id',
-        // If it isn't explicitly set, create a value by auto incrementing.
-        autoIncrement: true,
-      });
-      // You can create indexes here if needed
-      store.createIndex('name', 'name', { unique: true });
-    },
-  });
-
-  // You can add more setup logic here if needed
-}
-
-
-// Now your db object is strongly typed
-// Example of adding a category
 async function addCategory(category: { name: string, weight: number, emoji: string, id?: string}) {
-  const db = await openDB<MyDB>('MyDatabase', 1);
+  const db = await getFirestore(firebaseApp);
   if (category.id) {
-    await db.put('categories', category);
+    const ref = doc(db, 'categories', category.id)
+    setDoc(ref, { name: category.name, weight: category.weight, emoji: category.emoji}, { merge: true });
+    console.log("Document updated with ID: ", ref.id);
     return;
   }
-  await db.add('categories', {
-    name: category.name,
-    weight: category.weight,
-    emoji: category.emoji,
+
+  const ref = await addDoc(collection(db, "categories"), {
+      name: category.name,
+      weight: category.weight,
+      emoji: category.emoji
   });
+  console.log("Document added with ID: ", ref.id);
 }
 
-
 const Categories = () => {
-  const [categories, setCategories] = useState<Array<{name: string, weight: number, emoji: string, id: string}>>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [showInputs, setShowInputs] = useState(false);
   const [newName, setNewName] = useState('');
   const [newWeight, setNewWeight] = useState('');
@@ -65,21 +34,9 @@ const Categories = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-    // Use this function to setup your DB
-      await setupDB()
-      // Open the database
-      const db = await openDB('MyDatabase', 1); // Replace with your database name and version
-
-      // Read all categories from the store
-      const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
-      const store = tx.objectStore('categories');
-      const allCategories = await store.getAll();
-
-      setCategories(allCategories);
-    };
-
-    fetchData();
+    getCategories().then((categories) => {
+      setCategories(categories);
+    })
   }, []);
 
 
@@ -100,13 +57,7 @@ const Categories = () => {
     setNewName('');
     setNewWeight('');
     setShowInputs(false);
-    // Open the database
-    const db = await openDB('MyDatabase', 1); // Replace with your database name and version
-
-    // Read all categories from the store
-    const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
-    const store = tx.objectStore('categories');
-    const allCategories = await store.getAll();
+    const allCategories = await getCategories();
 
     setCategories(allCategories);
   };

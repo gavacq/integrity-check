@@ -6,8 +6,7 @@ import React, { use, useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
-import { setupDB } from './Categories';
-import { Category } from 'hooks/useCategories';
+import { Category, getCategories } from 'hooks/useCategories';
 import { openDB } from 'idb';
 import Link from 'next/link';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -35,15 +34,7 @@ const Ratings = () => {
 
  useEffect(() => {
     const fetchData = async () => {
-    // Use this function to setup your DB
-      await setupDB()
-      // Open the database
-      const db = await openDB('MyDatabase', 1); // Replace with your database name and version
-
-      // Read all categories from the store
-      const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
-      const store = tx.objectStore('categories');
-      const allCategories = await store.getAll() as Array<Category>
+      const allCategories = await getCategories();
 
       setCategories(allCategories);
       setRatings(allCategories.reduce((acc, category) => {
@@ -104,7 +95,7 @@ const Ratings = () => {
 
   if (categories.length === 0) {
     return (
-      <div className='grow flex flex-col items-center'>
+      <div className='grow flex flex-col items-center justify-center'>
         <h1 className='text-lunar-green-300'>Create a category</h1>
         <Link href='/categories' className='my-4'>
           <FontAwesomeIcon icon={faPlus} size='2x' className='text-revolver-300 cursor-pointer' />

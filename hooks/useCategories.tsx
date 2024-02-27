@@ -2,11 +2,29 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { firebaseApp } from "utils/firebase";
+
 export interface Category {
   name: string;
   weight: number;
   emoji: string;
   id: string;
+}
+
+export const getCategories = async () => {
+  // Use this function to setup your DB
+  const db = getFirestore(firebaseApp);
+
+  // Open the database
+  // const db = await openDB('MyDatabase', 1); // Replace with your database name and version
+
+  // Read all categories from the store
+  // const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
+  // const store = tx.objectStore('categories');
+  const querySnapshot = await getDocs(collection(db, 'categories'));
+  const allCategories = await querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Category[];
+  return allCategories
 }
 
 // const initialState = {

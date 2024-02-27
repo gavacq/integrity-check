@@ -9,11 +9,6 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    // <AuthProtected>
-      // <div className="grow flex flex-col">
-          <Ratings />
-          // <IconTray />
-      // </div>
-    // </AuthProtected>
+    <Ratings />
   );
 }
