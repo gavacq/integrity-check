@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser  } from '@fortawesome/free-regular-svg-icons';
-import { getAuth, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 import { firebaseApp } from 'utils/firebase';
 import { useEffect } from 'react';
