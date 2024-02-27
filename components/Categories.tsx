@@ -4,8 +4,9 @@ import EmojiPicker, { Emoji } from 'emoji-picker-react'
 import { getFirestore, collection, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { firebaseApp } from 'utils/firebase';
 import { Category, getCategories } from 'hooks/useCategories';
+import { useAuth } from 'providers/AuthContext';
 
-async function addCategory(category: { name: string, weight: number, emoji: string, id?: string}) {
+async function addCategory(category: { name: string, weight: number, emoji: string, userId: string, id?: string}) {
   const db = await getFirestore(firebaseApp);
   if (category.id) {
     const ref = doc(db, 'categories', category.id)
@@ -17,7 +18,8 @@ async function addCategory(category: { name: string, weight: number, emoji: stri
   const ref = await addDoc(collection(db, "categories"), {
       name: category.name,
       weight: category.weight,
-      emoji: category.emoji
+      emoji: category.emoji,
+      userId: category.userId
   });
   console.log("Document added with ID: ", ref.id);
 }
@@ -31,10 +33,11 @@ const Categories = () => {
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [newKey, setNewKey] = useState<string | undefined>(undefined)
+  const { currentUser } = useAuth();
 
 
   useEffect(() => {
-    getCategories().then((categories) => {
+    getCategories(currentUser?.uid || '').then((categories) => {
       setCategories(categories);
     })
   }, []);
@@ -46,6 +49,7 @@ const Categories = () => {
         name: newName,
         weight: parseInt(newWeight),
         emoji: newEmoji,
+        userId: currentUser?.uid || '',
         id: newKey
       });
     } catch (error) {
@@ -57,7 +61,7 @@ const Categories = () => {
     setNewName('');
     setNewWeight('');
     setShowInputs(false);
-    const allCategories = await getCategories();
+    const allCategories = await getCategories(currentUser?.uid || '');
 
     setCategories(allCategories);
   };

@@ -11,6 +11,7 @@ import { openDB } from 'idb';
 import Link from 'next/link';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useAuth } from 'providers/AuthContext';
 
 export interface Rating {
   name: string;
@@ -31,10 +32,11 @@ const Ratings = () => {
   const [acceptRating, setAcceptRating] = useState(false)
   const [reviewOpen, setReviewOpen] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const {currentUser} = useAuth();
 
  useEffect(() => {
     const fetchData = async () => {
-      const allCategories = await getCategories();
+      const allCategories = await getCategories(currentUser?.uid || '');
 
       setCategories(allCategories);
       setRatings(allCategories.reduce((acc, category) => {

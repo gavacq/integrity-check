@@ -2,7 +2,7 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { firebaseApp } from "utils/firebase";
 
 export interface Category {
@@ -12,7 +12,7 @@ export interface Category {
   id: string;
 }
 
-export const getCategories = async () => {
+export const getCategories = async (userId: string) => {
   // Use this function to setup your DB
   const db = getFirestore(firebaseApp);
 
@@ -22,7 +22,10 @@ export const getCategories = async () => {
   // Read all categories from the store
   // const tx = db.transaction('categories', 'readonly'); // Replace 'categories' with your actual store name
   // const store = tx.objectStore('categories');
-  const querySnapshot = await getDocs(collection(db, 'categories'));
+  // Create a query against the 'categories' collection where 'userId' field matches the provided userId
+  const categoriesQuery = query(collection(db, 'categories'), where('userId', '==', userId));
+
+  const querySnapshot = await getDocs(categoriesQuery);
   const allCategories = await querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Category[];
   return allCategories
 }
