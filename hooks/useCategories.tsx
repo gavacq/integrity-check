@@ -2,12 +2,12 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { firebaseApp } from "utils/firebase";
 
 export interface Category {
   name: string;
-  weight: number;
+  importance: number;
   emoji: string;
   id: string;
 }
@@ -28,6 +28,24 @@ export const getCategories = async (userId: string) => {
   const querySnapshot = await getDocs(categoriesQuery);
   const allCategories = await querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Category[];
   return allCategories
+}
+
+export const addCategory = async (category: { name: string, importance: number, emoji: string, userId: string, id?: string}) => {
+  const db = await getFirestore(firebaseApp);
+  if (category.id) {
+    const ref = doc(db, 'categories', category.id)
+    setDoc(ref, { name: category.name, importance: category.importance, emoji: category.emoji}, { merge: true });
+    console.log("Document updated with ID: ", ref.id);
+    return;
+  }
+
+  const ref = await addDoc(collection(db, "categories"), {
+      name: category.name,
+      importance: category.importance,
+      emoji: category.emoji,
+      userId: category.userId
+  });
+  console.log("Document added with ID: ", ref.id);
 }
 
 // const initialState = {

@@ -1,34 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react';
-import EmojiPicker, { Emoji } from 'emoji-picker-react'
-import { getFirestore, collection, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
-import { firebaseApp } from 'utils/firebase';
-import { Category, getCategories } from 'hooks/useCategories';
+import EmojiPicker from 'emoji-picker-react'
+import { Category, addCategory, getCategories } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
-
-async function addCategory(category: { name: string, weight: number, emoji: string, userId: string, id?: string}) {
-  const db = await getFirestore(firebaseApp);
-  if (category.id) {
-    const ref = doc(db, 'categories', category.id)
-    setDoc(ref, { name: category.name, weight: category.weight, emoji: category.emoji}, { merge: true });
-    console.log("Document updated with ID: ", ref.id);
-    return;
-  }
-
-  const ref = await addDoc(collection(db, "categories"), {
-      name: category.name,
-      weight: category.weight,
-      emoji: category.emoji,
-      userId: category.userId
-  });
-  console.log("Document added with ID: ", ref.id);
-}
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [showInputs, setShowInputs] = useState(false);
   const [newName, setNewName] = useState('');
-  const [newWeight, setNewWeight] = useState('');
+  const [newImportance, setNewImportance] = useState('');
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -47,7 +27,7 @@ const Categories = () => {
     try {
       await addCategory({
         name: newName,
-        weight: parseInt(newWeight),
+        importance: parseInt(newImportance),
         emoji: newEmoji,
         userId: currentUser?.uid || '',
         id: newKey
@@ -59,7 +39,7 @@ const Categories = () => {
     
     setNewKey(undefined);
     setNewName('');
-    setNewWeight('');
+    setNewImportance('');
     setShowInputs(false);
     const allCategories = await getCategories(currentUser?.uid || '');
 
@@ -80,7 +60,7 @@ const Categories = () => {
   const handleEditCategory = (category) => {
     setNewEmoji(category.emoji);
     setNewName(category.name);
-    setNewWeight(category.weight);
+    setNewImportance(category.importance);
     setNewKey(category.id);
     setShowInputs(true);
   }
@@ -92,23 +72,31 @@ const Categories = () => {
 
   return (
     <div className='flex flex-col mt-4 w-2/3'>
-      {!showInputs && (<table className='text-lunar-green-300 border-collapse'>
-        <thead>
-          <tr className='border-b border-lunar-green-200'>
-            <th className='w-2/3 text-left'>Name</th>
-            <th className='w-1/2 text-left'>Weight</th>
-          </tr>
-        </thead>
-        <tbody className='text-lunar-green-100'>
-          {categories.map((category, index) => (
-      <tr key={index} className='border-b border-lunar-green-200 h-12' onClick={() => handleEditCategory(category)}>
-        <td className='border-r border-lunar-green-200'>{category.emoji + ' ' + category.name}</td>
-        <td className='pl-2'>{category.weight}</td>
-      </tr>
-          ))}
-        </tbody>
-      </table>)}
-      <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button>
+      {!showInputs && (
+        <div className='grow flex flex-col items-center'>
+            <table className='text-lunar-green-300 border-collapse w-full'>
+              <thead>
+                <tr className='border-b border-lunar-green-200 sticky top-0 bg-ebony-950'>
+                  <th className='w-2/3 text-left'>Name</th>
+                  <th className='w-1/2 text-left'>Importance</th>
+                </tr>
+              </thead>
+            </table>
+            <div className='overflow-y-auto w-full' style={{ maxHeight: 'calc(100vh - 300px)' }}>
+              <table className='text-lunar-green-300 border-collapse w-full'>
+                <tbody className='text-lunar-green-100'>
+                  {categories.map((category, index) => (
+                    <tr key={index} className='border-b border-lunar-green-200 h-12' onClick={() => handleEditCategory(category)}>
+                      <td className='border-r border-lunar-green-200 w-2/3'>{category.emoji + ' ' + category.name}</td>
+                      <td className='pl-2 w-1/2'>{category.importance}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+        </div>
+      )}
+      {/* <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button> */}
       {!showInputs && upsertError && (<div className='text-red-500'>{upsertError}</div>)}
       {showInputs && (
         <>
@@ -121,9 +109,9 @@ const Categories = () => {
               </td>
             </tr>
             <tr className='border-b border-lunar-green-200 h-12'>
-              <th className='text-left text-lunar-green-100'>Weight</th>
+              <th className='text-left text-lunar-green-100'>Importance</th>
               <td className='text-right'>
-                <input type='number' value={newWeight} onChange={(e) => setNewWeight(e.target.value)} placeholder='Set a weight...' className='rounded-sm w-full bg-transparent text-lunar-green-100' />
+                <input type='number' value={newImportance} onChange={(e) => setNewImportance(e.target.value)} placeholder='Set a importance...' className='rounded-sm w-full bg-transparent text-lunar-green-100' />
               </td>
             </tr>
             <tr className='border-b border-lunar-green-200 h-12'>
@@ -146,7 +134,7 @@ const Categories = () => {
             </tr>
           </tbody>
         </table>
-        {newName && newWeight && (<button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6' onClick={handleAddCategory}>Submit</button>)}
+        {newName && newImportance && (<button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6' onClick={handleAddCategory}>Submit</button>)}
         </>
       )}
     </div>
