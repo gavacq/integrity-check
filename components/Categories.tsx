@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import EmojiPicker from 'emoji-picker-react'
 import { Category, addCategory, getCategories } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -71,6 +73,13 @@ const Categories = () => {
   }
 
   return (
+  <div className="flex flex-col grow items-center py-4">
+    <div className='grid grid-cols-3 items-center w-2/3'>
+      <h1 className="col-start-2 text-lunar-green-300 text-center">Categories</h1>
+      <div className='text-right'>
+        <FontAwesomeIcon icon={faPlus} size="lg" className='text-lunar-green-300 cursor-pointer' onClick={() => HandleClickAddCategory()} />
+      </div>
+    </div>
     <div className='flex flex-col mt-4 w-2/3'>
       {!showInputs && (
         <div className='grow flex flex-col items-center'>
@@ -138,6 +147,7 @@ const Categories = () => {
         </>
       )}
     </div>
+  </div>
   );
 };
 
