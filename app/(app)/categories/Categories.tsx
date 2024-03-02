@@ -23,6 +23,60 @@ const Categories = () => {
     });
   }, []);
 
+  const NewCategory = () => {
+    return (
+      <tr className="border-b border-lunar-green-200 h-12">
+        <td className="text-right">
+          <input
+            type="text"
+            value={newEmoji}
+            placeholder="Add an emoji..."
+            className="rounded-sm w-full bg-transparent text-lunar-green-100"
+            onFocus={() => setShowEmojiPicker(true)}
+            readOnly // Add this if you want the field to be read-only
+          />
+          {showEmojiPicker && (
+            <div
+              onClick={closeModal}
+              style={{
+                position: 'fixed',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1000,
+              }}
+            >
+              <EmojiPicker onEmojiClick={onEmojiClick} />
+            </div>
+          )}
+        </td>
+        <td className="text-right">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="Add a name..."
+            className="rounded-sm w-full bg-transparent text-lunar-green-100"
+          />
+        </td>
+        <td className="text-right">
+          <input
+            type="number"
+            value={newImportance}
+            onChange={(e) => setNewImportance(e.target.value)}
+            placeholder="Set an importance..."
+            className="rounded-sm w-full bg-transparent text-lunar-green-100"
+          />
+        </td>
+      </tr>
+    );
+  };
+
   const handleAddCategory = async () => {
     try {
       await addCategory({
@@ -102,65 +156,9 @@ const Categories = () => {
               </tr>
             </thead>
           </table>
-          <table className="text-lunar-green-300 border-collapse w-full">
-            <tbody>
-              <tr className="border-b border-lunar-green-200 h-12">
-                <td className="text-right">
-                  <input
-                    type="text"
-                    value={newEmoji}
-                    placeholder="Add an emoji..."
-                    className="rounded-sm w-full bg-transparent text-lunar-green-100"
-                    onFocus={() => setShowEmojiPicker(true)}
-                    readOnly // Add this if you want the field to be read-only
-                  />
-                  {showEmojiPicker && (
-                    <div
-                      onClick={closeModal}
-                      style={{
-                        position: 'fixed',
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 1000,
-                      }}
-                    >
-                      <EmojiPicker onEmojiClick={onEmojiClick} />
-                    </div>
-                  )}
-                </td>
-                <td className="text-right">
-                  <input
-                    type="text"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    placeholder="Add a name..."
-                    className="rounded-sm w-full bg-transparent text-lunar-green-100"
-                  />
-                </td>
-                <td className="text-right">
-                  <input
-                    type="number"
-                    value={newImportance}
-                    onChange={(e) => setNewImportance(e.target.value)}
-                    placeholder="Set an importance..."
-                    className="rounded-sm w-full bg-transparent text-lunar-green-100"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div
-            className="overflow-y-auto w-full"
-            style={{ maxHeight: 'calc(100vh - 400px)' }}
-          >
             <table className="text-lunar-green-300 border-collapse w-full">
-              <tbody className="text-lunar-green-100">
+              <tbody className="text-lunar-green-100 overflow-y-auto w-full block" style={{ maxHeight: 'calc(100vh - 300px'}}>
+                <NewCategory />
                 {categories.map((category, index) => (
                   <tr
                     key={index}
@@ -176,13 +174,12 @@ const Categories = () => {
                 ))}
               </tbody>
             </table>
-          </div>
         </div>
         {/* <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button> */}
         {!showInputs && upsertError && (
           <div className="text-red-500">{upsertError}</div>
         )}
-        {showInputs && (
+        {/* {showInputs && (
           <>
             <table className="w-full my-2">
               <tbody>
@@ -203,7 +200,7 @@ const Categories = () => {
               </button>
             )}
           </>
-        )}
+        )} */}
       </div>
     </div>
   );
