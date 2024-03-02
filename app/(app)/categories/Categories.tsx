@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { Category, addCategory, getCategories } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
@@ -9,8 +9,8 @@ import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [showInputs, setShowInputs] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newImportance, setNewImportance] = useState('');
+  const [newName, setNewName] = useState('My Category');
+  const [newImportance, setNewImportance] = useState(0)
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -25,13 +25,12 @@ const Categories = () => {
 
   const NewCategory = () => {
     return (
-      <tr className="border-b border-lunar-green-200 h-12">
-        <td className="text-right">
+      <div className="grid grid-cols-4 gap-4 w-full mb-4 mt-2 bg-gray-800 h-8 items-center">
+        <div className="col-start-1">
           <input
             type="text"
             value={newEmoji}
-            placeholder="Add an emoji..."
-            className="rounded-sm w-full bg-transparent text-lunar-green-100"
+            className="rounded-sm w-full bg-transparent text-lunar-green-100 text-center"
             onFocus={() => setShowEmojiPicker(true)}
             readOnly // Add this if you want the field to be read-only
           />
@@ -54,26 +53,24 @@ const Categories = () => {
               <EmojiPicker onEmojiClick={onEmojiClick} />
             </div>
           )}
-        </td>
-        <td className="text-right">
+        </div>
+        <div className="col-start-2 text-left">
           <input
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            placeholder="Add a name..."
             className="rounded-sm w-full bg-transparent text-lunar-green-100"
           />
-        </td>
-        <td className="text-right">
+        </div>
+        <div className="col-start-3">
           <input
             type="number"
             value={newImportance}
-            onChange={(e) => setNewImportance(e.target.value)}
-            placeholder="Set an importance..."
-            className="rounded-sm w-full bg-transparent text-lunar-green-100"
+            onChange={(e) => setNewImportance(Number(e.target.value))}
+            className="text-center rounded-sm w-full bg-transparent text-lunar-green-100"
           />
-        </td>
-      </tr>
+        </div>
+      </div>
     );
   };
 
@@ -146,40 +143,38 @@ const Categories = () => {
         </div>
       </div>
       <div className="flex flex-col mt-4 w-2/3">
-        <div className="grow flex flex-col items-center">
-          <table className="text-lunar-green-300 border-collapse w-full">
-            <thead>
-              <tr className="border-b border-lunar-green-200 sticky top-0 bg-ebony-950">
-                <th className="w-1/6 text-center">Emoji</th>
-                <th className="w-2/3 text-left">Name</th>
-                <th className="w-1/6 text-left">Importance</th>
-              </tr>
-            </thead>
-          </table>
-            <table className="text-lunar-green-300 border-collapse w-full">
-              <tbody className="text-lunar-green-100 overflow-y-auto w-full block" style={{ maxHeight: 'calc(100vh - 300px'}}>
-                <NewCategory />
-                {categories.map((category, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-lunar-green-200 h-12"
-                    onClick={() => handleEditCategory(category)}
-                  >
-                    <td className="w-1/6 text-center">{category.emoji}</td>
-                    <td className="border-r border-lunar-green-200 w-3/5 text-left">
-                      {category.name}
-                    </td>
-                    <td className="w-1/3 text-center">{category.importance}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="flex flex-col items-center">
+          {/* Fixed Headers */}
+          <div className="grid grid-cols-4 gap-4 w-full bg-ebony-950 text-lunar-green-200 font-bold">
+            <div className="text-center">Emoji</div>
+            <div className="text-left">Name</div>
+            <div className="text-left">Importance</div>
+          </div>
+          {showInputs && <NewCategory />}
+
+          {/* Scrollable Grid Body */}
+          <div
+            className="grid grid-cols-4 gap-4 w-full overflow-y-auto text-lunar-green-200"
+            style={{ maxHeight: 'calc(100vh - 400px)' }}
+          >
+            {categories.map((category, index) => (
+              <React.Fragment key={index}>
+                <div className="col-start-1 text-center">{category.emoji}</div>
+                <div className="text-left">{category.name}</div>
+                <div className="text-center">{category.importance}</div>
+              </React.Fragment>
+            ))}
+          </div>
         </div>
-        {/* <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button> */}
-        {!showInputs && upsertError && (
-          <div className="text-red-500">{upsertError}</div>
-        )}
-        {/* {showInputs && (
+      </div>
+
+      {/* grid layout */}
+
+      {/* <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button> */}
+      {!showInputs && upsertError && (
+        <div className="text-red-500">{upsertError}</div>
+      )}
+      {/* {showInputs && (
           <>
             <table className="w-full my-2">
               <tbody>
@@ -201,7 +196,6 @@ const Categories = () => {
             )}
           </>
         )} */}
-      </div>
     </div>
   );
 };
