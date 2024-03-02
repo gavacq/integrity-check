@@ -50,7 +50,7 @@ const Ratings = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentUser?.uid]);
 
 
 

@@ -21,7 +21,7 @@ const Categories = () => {
     getCategories(currentUser?.uid || '').then((categories) => {
       setCategories(categories);
     });
-  }, []);
+  }, [currentUser?.uid]);
 
   const NewCategory = () => {
     return (
