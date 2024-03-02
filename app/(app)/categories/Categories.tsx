@@ -74,28 +74,28 @@ const Categories = () => {
     );
   };
 
-  const handleAddCategory = async () => {
-    try {
-      await addCategory({
-        name: newName,
-        importance: parseInt(newImportance),
-        emoji: newEmoji,
-        userId: currentUser?.uid || '',
-        id: newKey,
-      });
-    } catch (error) {
-      console.error('Error adding category', error);
-      setUpsertError('Error adding category: ' + error);
-    }
+  // const handleAddCategory = async () => {
+  //   try {
+  //     await addCategory({
+  //       name: newName,
+  //       importance: parseInt(newImportance),
+  //       emoji: newEmoji,
+  //       userId: currentUser?.uid || '',
+  //       id: newKey,
+  //     });
+  //   } catch (error) {
+  //     console.error('Error adding category', error);
+  //     setUpsertError('Error adding category: ' + error);
+  //   }
 
-    setNewKey(undefined);
-    setNewName('');
-    setNewImportance('');
-    setShowInputs(false);
-    const allCategories = await getCategories(currentUser?.uid || '');
+  //   setNewKey(undefined);
+  //   setNewName('');
+  //   setNewImportance('');
+  //   setShowInputs(false);
+  //   const allCategories = await getCategories(currentUser?.uid || '');
 
-    setCategories(allCategories);
-  };
+  //   setCategories(allCategories);
+  // };
 
   const onEmojiClick = (event) => {
     setNewEmoji(event.emoji);
