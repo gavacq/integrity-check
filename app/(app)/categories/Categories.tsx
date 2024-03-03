@@ -36,8 +36,8 @@ const Categories = () => {
 
   const NewCategory = () => {
     return (
-      <div className="grid grid-cols-4 gap-4 w-full mb-4 mt-2 bg-gray-800 h-8 items-center">
-        <div className="col-start-1">
+      <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full mb-4 mt-2 h-8 items-center">
+        <div className="col-start-1 border-b border-shuttle-gray-300 h-8">
           <input
             type="text"
             value={newEmoji}
@@ -65,7 +65,7 @@ const Categories = () => {
             </div>
           )}
         </div>
-        <div className="col-start-2 text-left">
+        <div className="col-start-2 text-left border-b border-shuttle-gray-300 h-8">
           <input
             type="text"
             value={newName}
@@ -73,7 +73,7 @@ const Categories = () => {
             className="rounded-sm w-full bg-transparent text-lunar-green-100"
           />
         </div>
-        <div className="col-start-3">
+        <div className="col-start-3 border-b border-shuttle-gray-300 h-8">
           <input
             type="number"
             value={newImportance}
@@ -205,7 +205,7 @@ const Categories = () => {
       <div className="flex flex-col mt-4 w-5/6">
         <div className="flex flex-col items-center">
           {/* Fixed Headers */}
-          <div className="grid grid-cols-4 gap-4 w-full bg-ebony-950 text-lunar-green-200 font-bold">
+          <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full bg-ebony-950 text-lunar-green-200 font-bold">
             <div className="text-center">Emoji</div>
             <div className="text-left">Name</div>
             <div className="text-left">Importance</div>
@@ -214,14 +214,14 @@ const Categories = () => {
 
           {/* Scrollable Grid Body */}
           <div
-            className="grid grid-cols-4 gap-4 w-full overflow-y-auto text-lunar-green-200"
+            className="grid grid-cols-[1fr,3fr,1fr,1fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
             style={{ maxHeight: 'calc(100vh - 500px)' }}
           >
             {categories.map((category, index) => (
               <React.Fragment key={index}>
-                <div className="col-start-1 text-center">{category.emoji}</div>
-                <div className="text-left">{category.name}</div>
-                <div className="text-center">{category.importance}</div>
+                <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">{category.emoji}</div>
+                <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">{category.name}</div>
+                <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">{category.importance}</div>
               </React.Fragment>
             ))}
           </div>
