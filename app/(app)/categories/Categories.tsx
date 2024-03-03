@@ -11,8 +11,14 @@ enum ConfirmationType {
   close = 'close',
 }
 
+// TODO: don't define input functions in component as when the input changes, the component is re-rendered and focus is lost
 const Categories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [initalCategories, setInitialCategories] = useState<
+    Record<string, Category>
+  >({});
+  const [updatedCategories, setUpdatedCategories] = useState<
+    Record<string, Category>
+  >({});
   const [showInputs, setShowInputs] = useState(false);
   const [newName, setNewName] = useState('My Category');
   const [newImportance, setNewImportance] = useState(0);
@@ -30,14 +36,25 @@ const Categories = () => {
 
   useEffect(() => {
     getCategories(currentUser?.uid || '').then((categories) => {
-      setCategories(categories);
+      setInitialCategories(
+        categories.reduce((acc, category) => {
+          acc[category.id] = category;
+          return acc;
+        }, {} as Record<string, Category>)
+      );
+      setUpdatedCategories(
+        categories.reduce((acc, category) => {
+          acc[category.id] = category;
+          return acc;
+        }, {} as Record<string, Category>)
+      );
     });
   }, [currentUser?.uid]);
 
   const NewCategory = () => {
     return (
       <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full mb-4 mt-2 h-8 items-center">
-        <div className="col-start-1 border-b border-shuttle-gray-300 h-8">
+        <div className="flex col-start-1 border-b border-shuttle-gray-300 h-8 bg-shuttle-gray-950">
           <input
             type="text"
             value={newEmoji}
@@ -65,7 +82,7 @@ const Categories = () => {
             </div>
           )}
         </div>
-        <div className="col-start-2 text-left border-b border-shuttle-gray-300 h-8">
+        <div className="col-start-2 text-left border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
           <input
             type="text"
             value={newName}
@@ -73,7 +90,7 @@ const Categories = () => {
             className="rounded-sm w-full bg-transparent text-lunar-green-100"
           />
         </div>
-        <div className="col-start-3 border-b border-shuttle-gray-300 h-8">
+        <div className="col-start-3 border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
           <input
             type="number"
             value={newImportance}
@@ -108,21 +125,32 @@ const Categories = () => {
   //   setCategories(allCategories);
   // };
 
+  const handleEditCategory = (categoryKey, field, value) => {
+    setUpdatedCategories({
+      ...updatedCategories,
+      [categoryKey]: {
+        ...updatedCategories[categoryKey],
+        [field]: value,
+      },
+    });
+  }
+
   const handleClickSave = async () => {
     setConfirmationModal({
       open: true,
       message: 'Are you sure you want to save?',
       type: ConfirmationType.save,
-    })
-  }
+    });
+  };
 
   const handleClickClose = () => {
     setConfirmationModal({
       open: true,
-      message: 'Are you sure you want to close? Any unsaved changes will be lost.',
+      message:
+        'Are you sure you want to close? Any unsaved changes will be lost.',
       type: ConfirmationType.close,
-    })
-  }
+    });
+  };
 
   const onEmojiClick = (event) => {
     setNewEmoji(event.emoji);
@@ -135,13 +163,13 @@ const Categories = () => {
     }
   };
 
-  const handleEditCategory = (category) => {
-    setNewEmoji(category.emoji);
-    setNewName(category.name);
-    setNewImportance(category.importance);
-    setNewKey(category.id);
-    setShowInputs(true);
-  };
+  // const handleEditCategory = (category) => {
+  //   setNewEmoji(category.emoji);
+  //   setNewName(category.name);
+  //   setNewImportance(category.importance);
+  //   setNewKey(category.id);
+  //   setShowInputs(true);
+  // };
 
   const handleClickAddNewCategory = async () => {
     setShowInputs(true);
@@ -151,19 +179,27 @@ const Categories = () => {
 
   const saveChanges = () => {
     console.log('TODO: save changes');
+    setInitialCategories({
+      ...updatedCategories,
+    });
     setIsEditing(false);
-  }
+    setShowInputs(false);
+  };
 
   const cancelChanges = () => {
     console.log('TODO: cancel changes');
+    setUpdatedCategories({
+      ...initalCategories,
+    });
     setIsEditing(false);
-  }
+    setShowInputs(false);
+  };
 
   const handleYes = () => {
     if (confirmationModal.type === ConfirmationType.save) {
       saveChanges();
     } else if (confirmationModal.type === ConfirmationType.close) {
-      cancelChanges()
+      cancelChanges();
     }
 
     setConfirmationModal({
@@ -171,7 +207,7 @@ const Categories = () => {
       message: '',
       type: undefined,
     });
-  }
+  };
 
   const handleNo = () => {
     setConfirmationModal({
@@ -179,7 +215,11 @@ const Categories = () => {
       message: '',
       type: undefined,
     });
-  }
+  };
+
+  const handleClickEditMode = () => {
+    setIsEditing(true);
+  };
 
   return (
     <div className="flex flex-col grow items-center py-4">
@@ -189,7 +229,7 @@ const Categories = () => {
             icon={faGear}
             size="sm"
             className="text-lunar-green-200 cursor-pointer"
-            onClick={() => handleClickAddNewCategory()}
+            onClick={() => handleClickEditMode()}
           />
         </div>
         <h1 className="text-lunar-green-300 text-center">Categories</h1>
@@ -217,45 +257,48 @@ const Categories = () => {
             className="grid grid-cols-[1fr,3fr,1fr,1fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
             style={{ maxHeight: 'calc(100vh - 500px)' }}
           >
-            {categories.map((category, index) => (
-              <React.Fragment key={index}>
-                <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">{category.emoji}</div>
-                <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">{category.name}</div>
-                <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">{category.importance}</div>
+            {Object.entries(updatedCategories).map((category) => (
+              isEditing ? (
+              <React.Fragment key={category[0]}>
+                <input
+                  className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
+                  type='text'
+                  value={category[1].emoji}
+                  onChange={(e) => handleEditCategory(category[0], 'emoji', e.target.value)}
+                />
+                <input
+                  className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                  type='text'
+                  value={category[1].name}
+                  onChange={(e) => handleEditCategory(category[0], 'name', e.target.value)}
+                />
+                <input
+                  className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                  type='number'
+                  value={category[1].importance}
+                  onChange={(e) => handleEditCategory(category[0], 'importance', e.target.value)}
+                />
               </React.Fragment>
+              ) : (
+              <React.Fragment key={category[0]}>
+                <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
+                  {category[1].emoji}
+                </div>
+                <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">
+                  {category[1].name}
+                </div>
+                <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
+                  {category[1].importance}
+                </div>
+              </React.Fragment>
+              )
             ))}
           </div>
         </div>
       </div>
-
-      {/* grid layout */}
-
-      {/* <button className='w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6 mt-2' onClick={() => HandleClickAddCategory()}>{showInputs ? 'Close' : 'Add Category'}</button> */}
       {!showInputs && upsertError && (
         <div className="text-red-500">{upsertError}</div>
       )}
-      {/* {showInputs && (
-          <>
-            <table className="w-full my-2">
-              <tbody>
-                <tr className="border-b border-lunar-green-200 h-12">
-                  <th className="text-left text-lunar-green-100">Importance</th>
-                </tr>
-                <tr className="border-b border-lunar-green-200 h-12">
-                  <th className="text-left text-lunar-green-100">Emoji</th>
-                </tr>
-              </tbody>
-            </table>
-            {newName && newImportance && (
-              <button
-                className="w-full bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-6"
-                onClick={handleAddCategory}
-              >
-                Submit
-              </button>
-            )}
-          </>
-        )} */}
       {/* cover fixed icon tray with close and save buttons if isEditing. TODO: replace icon tray, currently z-index isn't working*/}
       {isEditing && (
         <div className="mt-auto grid grid-cols-2 items-center text-shuttle-gray-200 bg-ebony-950 h-20 z-100 w-full border-b-2 border-revolver-900">
@@ -265,22 +308,25 @@ const Categories = () => {
           >
             Close
           </button>
-          <button className="w-full text-center" onClick={() => handleClickSave()}>
+          <button
+            className="w-full text-center"
+            onClick={() => handleClickSave()}
+          >
             Save
           </button>
         </div>
       )}
-    {confirmationModal.open && (
-      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-lunar-green-300">
-        <div className="bg-ebony-950 rounded-lg p-4 w-1/2">
-          <h2 className="mb-6">{confirmationModal.message}</h2>
-          <div className="flex justify-between px-6">
-            <button onClick={() => handleNo()}>No</button>
-            <button onClick={() => handleYes()}>Yes</button>
+      {confirmationModal.open && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-lunar-green-300">
+          <div className="bg-ebony-950 rounded-lg p-4 w-1/2">
+            <h2 className="mb-6">{confirmationModal.message}</h2>
+            <div className="flex justify-between px-6">
+              <button onClick={() => handleNo()}>No</button>
+              <button onClick={() => handleYes()}>Yes</button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 };
