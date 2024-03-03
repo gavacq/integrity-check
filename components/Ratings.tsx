@@ -14,6 +14,7 @@ import { useAuth } from 'providers/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 
 export interface Rating {
+  id: string,
   name: string;
   value: number;
 }
@@ -26,7 +27,8 @@ const Ratings = () => {
   const [done, setDone] = useState(false);
   const [ratings, setRatings] = useState(
     categories.reduce((acc, category) => {
-      acc[category.name] = {
+      acc[category.id] = {
+        id: category.id,
         name: category.name,
         value: 0,
       };
@@ -55,7 +57,8 @@ const Ratings = () => {
       setCategories(allCategories);
       setRatings(
         allCategories.reduce((acc, category) => {
-          acc[category.name] = {
+          acc[category.id] = {
+            id: category.id,
             name: category.name,
             value: 0,
           };
@@ -69,12 +72,12 @@ const Ratings = () => {
     fetchData();
   }, [currentUser?.uid]);
 
-  const setRatingForCategory = (category: string) => {
+  const setRatingForCategory = (categoryId: string) => {
     return (rating: number) => {
       setRatings((prevRatings) => {
         const updatedRatings = { ...prevRatings };
-        updatedRatings[category] = {
-          name: category,
+        updatedRatings[categoryId] = {
+          ...updatedRatings[categoryId],
           value: rating,
         };
         return updatedRatings;
@@ -105,10 +108,17 @@ const Ratings = () => {
 
   const handleSelectCategory = (category: string) => {
     setReviewOpen(false);
-    setCurrentCategory(categories.find((c) => c.name === category));
+    setCurrentCategory(categories.find((c) => c.id === category));
   };
 
+  const calculateScore = () => {
+    return Object.values(ratings).reduce((acc, rating) => {
+      return acc + (rating.value - 1) * categories.find((c) => c.id === rating.id)!.importance;
+    }, 0);
+  }
+
   const handleSubmit = () => {
+
     setSubmitted(true);
     setReviewOpen(false);
   };
@@ -161,8 +171,8 @@ const Ratings = () => {
               {currentCategory.emoji + ' ' + currentCategory.name}
             </h2>
             <StarRating
-              rating={ratings[currentCategory.name]}
-              setRating={setRatingForCategory(currentCategory.name)}
+              rating={ratings[currentCategory.id]}
+              setRating={setRatingForCategory(currentCategory.id)}
               starSize="3x"
               active={!submitted}
             />
@@ -170,7 +180,7 @@ const Ratings = () => {
 
           {!done && (
             <div className="h-10 w-full flex justify-center items-center my-4">
-              {!acceptRating && ratings[currentCategory.name].value > 0 && (
+              {!acceptRating && ratings[currentCategory.id].value > 0 && (
                 <button
                   className="bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-8"
                   onClick={handleAcceptRating}
@@ -199,10 +209,10 @@ const Ratings = () => {
           <h2 className="text-lunar-green-300 font-bold text-2xl">Review</h2>
           <div className="table w-full">
             {Object.values(ratings).map((rating, i) => (
-              <div key={rating.name} className="table-row">
+              <div key={rating.id} className="table-row">
                 <div
                   onClick={() =>
-                    !submitted && handleSelectCategory(rating.name)
+                    !submitted && handleSelectCategory(rating.id)
                   }
                   className="table-cell p-2"
                 >
@@ -213,7 +223,7 @@ const Ratings = () => {
                 <div className="table-cell p-2">
                   <StarRating
                     rating={rating}
-                    setRating={setRatingForCategory(rating.name)}
+                    setRating={setRatingForCategory(rating.id)}
                     starSize="1x"
                     active={!submitted}
                   />
