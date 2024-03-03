@@ -11,6 +11,7 @@ import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from 'components/LoadingSpinner';
+import NewCategory from './NewCategory';
 
 enum ConfirmationType {
   save = 'save',
@@ -38,6 +39,12 @@ const Categories = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useAuth();
+  const [newCategory, setNewCategory] = useState<Category>({
+    name: 'My Category',
+    importance: 0,
+    emoji: '❓',
+    id: 'tempKey',
+  });
 
   useEffect(() => {
     getCategories(currentUser?.uid || '')
@@ -62,58 +69,6 @@ const Categories = () => {
         setIsLoading(false);
       });
   }, [currentUser?.uid]);
-
-  const NewCategory = () => {
-    return (
-      <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full mb-4 mt-2 h-8 items-center">
-        <div className="flex col-start-1 border-b border-shuttle-gray-300 h-8 bg-shuttle-gray-950">
-          <input
-            type="text"
-            value={newEmoji}
-            className="rounded-sm w-full bg-transparent text-lunar-green-100 text-center"
-            onFocus={() => setShowEmojiPicker(true)}
-            readOnly // Add this if you want the field to be read-only
-          />
-          {showEmojiPicker && (
-            <div
-              onClick={closeModal}
-              style={{
-                position: 'fixed',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
-              }}
-            >
-              <EmojiPicker onEmojiClick={onEmojiClick} />
-            </div>
-          )}
-        </div>
-        <div className="col-start-2 text-left border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className="rounded-sm w-full bg-transparent text-lunar-green-100"
-          />
-        </div>
-        <div className="col-start-3 border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
-          <input
-            type="number"
-            value={newImportance}
-            onChange={(e) => setNewImportance(Number(e.target.value))}
-            className="text-center rounded-sm w-full bg-transparent text-lunar-green-100"
-          />
-        </div>
-      </div>
-    );
-  };
-
   // const handleAddCategory = async () => {
   //   try {
   //     await addCategory({
@@ -196,10 +151,7 @@ const Categories = () => {
         categoriesToSave = {
           ...categoriesToSave,
           tempKey: {
-            emoji: newEmoji,
-            name: newName,
-            importance: newImportance,
-            id: 'tempKey',
+            ...newCategory,
           },
         };
       }
@@ -289,7 +241,12 @@ const Categories = () => {
               <div className="text-left">Name</div>
               <div className="text-left">Importance</div>
             </div>
-            {showInputs && <NewCategory />}
+            {showInputs && (
+              <NewCategory
+                category={newCategory}
+                setCategory={setNewCategory}
+              />
+            )}
 
             {/* Scrollable Grid Body */}
             <div
