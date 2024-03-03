@@ -40,6 +40,7 @@ const Ratings = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isValidImportanceSum, setIsValidImportanceSum] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [score, setScore] = useState(0);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -113,12 +114,13 @@ const Ratings = () => {
 
   const calculateScore = () => {
     return Object.values(ratings).reduce((acc, rating) => {
-      return acc + (rating.value - 1) * categories.find((c) => c.id === rating.id)!.importance;
+      return acc + (rating.value - 1) * (categories.find((c) => c.id === rating.id)!.importance / 4);
     }, 0);
   }
 
   const handleSubmit = () => {
-
+    const score = calculateScore();
+    setScore(score);
     setSubmitted(true);
     setReviewOpen(false);
   };
@@ -195,6 +197,9 @@ const Ratings = () => {
 
       {submitted && !reviewOpen && (
         <div className="flex flex-col items-center">
+          <h1 className="text-revolver-300 font-bold text-2xl">
+            {Math.round(score)}
+          </h1>
           <h2 className="text-lunar-green-300 font-bold text-sm sm:text-lg">
             🎉 Congratulations on putting in the work!
           </h2>
