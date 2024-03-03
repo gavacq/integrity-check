@@ -6,15 +6,26 @@ import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
 
+enum ConfirmationType {
+  save = 'save',
+  close = 'close',
+}
+
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [showInputs, setShowInputs] = useState(false);
   const [newName, setNewName] = useState('My Category');
-  const [newImportance, setNewImportance] = useState(0)
+  const [newImportance, setNewImportance] = useState(0);
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [newKey, setNewKey] = useState<string | undefined>(undefined);
+  const [isEditing, setIsEditing] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState({
+    open: false,
+    message: '',
+    type: undefined as ConfirmationType | undefined,
+  });
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -97,6 +108,22 @@ const Categories = () => {
   //   setCategories(allCategories);
   // };
 
+  const handleClickSave = async () => {
+    setConfirmationModal({
+      open: true,
+      message: 'Are you sure you want to save?',
+      type: ConfirmationType.save,
+    })
+  }
+
+  const handleClickClose = () => {
+    setConfirmationModal({
+      open: true,
+      message: 'Are you sure you want to close? Any unsaved changes will be lost.',
+      type: ConfirmationType.close,
+    })
+  }
+
   const onEmojiClick = (event) => {
     setNewEmoji(event.emoji);
     setShowEmojiPicker(false); // Hide emoji picker after selection
@@ -116,20 +143,53 @@ const Categories = () => {
     setShowInputs(true);
   };
 
-  const HandleClickAddCategory = async () => {
-    setShowInputs(!showInputs);
+  const handleClickAddNewCategory = async () => {
+    setShowInputs(true);
+    setIsEditing(true);
     setUpsertError('');
   };
 
+  const saveChanges = () => {
+    console.log('TODO: save changes');
+    setIsEditing(false);
+  }
+
+  const cancelChanges = () => {
+    console.log('TODO: cancel changes');
+    setIsEditing(false);
+  }
+
+  const handleYes = () => {
+    if (confirmationModal.type === ConfirmationType.save) {
+      saveChanges();
+    } else if (confirmationModal.type === ConfirmationType.close) {
+      cancelChanges()
+    }
+
+    setConfirmationModal({
+      open: false,
+      message: '',
+      type: undefined,
+    });
+  }
+
+  const handleNo = () => {
+    setConfirmationModal({
+      open: false,
+      message: '',
+      type: undefined,
+    });
+  }
+
   return (
     <div className="flex flex-col grow items-center py-4">
-      <div className="grid grid-cols-3 items-center w-2/3">
+      <div className="grid grid-cols-3 items-center w-5/6">
         <div className="text-left">
           <FontAwesomeIcon
             icon={faGear}
             size="sm"
             className="text-lunar-green-200 cursor-pointer"
-            onClick={() => HandleClickAddCategory()}
+            onClick={() => handleClickAddNewCategory()}
           />
         </div>
         <h1 className="text-lunar-green-300 text-center">Categories</h1>
@@ -138,11 +198,11 @@ const Categories = () => {
             icon={faPlus}
             size="sm"
             className="text-lunar-green-200 cursor-pointer"
-            onClick={() => HandleClickAddCategory()}
+            onClick={() => handleClickAddNewCategory()}
           />
         </div>
       </div>
-      <div className="flex flex-col mt-4 w-2/3">
+      <div className="flex flex-col mt-4 w-5/6">
         <div className="flex flex-col items-center">
           {/* Fixed Headers */}
           <div className="grid grid-cols-4 gap-4 w-full bg-ebony-950 text-lunar-green-200 font-bold">
@@ -155,7 +215,7 @@ const Categories = () => {
           {/* Scrollable Grid Body */}
           <div
             className="grid grid-cols-4 gap-4 w-full overflow-y-auto text-lunar-green-200"
-            style={{ maxHeight: 'calc(100vh - 400px)' }}
+            style={{ maxHeight: 'calc(100vh - 500px)' }}
           >
             {categories.map((category, index) => (
               <React.Fragment key={index}>
@@ -196,6 +256,31 @@ const Categories = () => {
             )}
           </>
         )} */}
+      {/* cover fixed icon tray with close and save buttons if isEditing. TODO: replace icon tray, currently z-index isn't working*/}
+      {isEditing && (
+        <div className="mt-auto grid grid-cols-2 items-center text-shuttle-gray-200 bg-ebony-950 h-20 z-100 w-full border-b-2 border-revolver-900">
+          <button
+            className="w-full text-center"
+            onClick={() => handleClickClose()}
+          >
+            Close
+          </button>
+          <button className="w-full text-center" onClick={() => handleClickSave()}>
+            Save
+          </button>
+        </div>
+      )}
+    {confirmationModal.open && (
+      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-lunar-green-300">
+        <div className="bg-ebony-950 rounded-lg p-4 w-1/2">
+          <h2 className="mb-6">{confirmationModal.message}</h2>
+          <div className="flex justify-between px-6">
+            <button onClick={() => handleNo()}>No</button>
+            <button onClick={() => handleYes()}>Yes</button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 };
