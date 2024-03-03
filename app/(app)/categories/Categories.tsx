@@ -5,13 +5,13 @@ import { Category, addCategory, getCategories } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 enum ConfirmationType {
   save = 'save',
-  close = 'close',
+  cancel = 'cancel',
 }
 
-// TODO: don't define input functions in component as when the input changes, the component is re-rendered and focus is lost
 const Categories = () => {
   const [initalCategories, setInitialCategories] = useState<
     Record<string, Category>
@@ -25,13 +25,13 @@ const Categories = () => {
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [newKey, setNewKey] = useState<string | undefined>(undefined);
   const [isEditing, setIsEditing] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState({
     open: false,
     message: '',
     type: undefined as ConfirmationType | undefined,
   });
+  const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -48,7 +48,12 @@ const Categories = () => {
           return acc;
         }, {} as Record<string, Category>)
       );
-    });
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Error getting categories:', error);
+      setUpsertError('Error getting categories: ' + error);
+      setIsLoading(false);
+    })
   }, [currentUser?.uid]);
 
   const NewCategory = () => {
@@ -143,12 +148,12 @@ const Categories = () => {
     });
   };
 
-  const handleClickClose = () => {
+  const handleClickCancel = () => {
     setConfirmationModal({
       open: true,
       message:
-        'Are you sure you want to close? Any unsaved changes will be lost.',
-      type: ConfirmationType.close,
+        'Are you sure you want to cancel? Any unsaved changes will be lost.',
+      type: ConfirmationType.cancel,
     });
   };
 
@@ -163,22 +168,26 @@ const Categories = () => {
     }
   };
 
-  // const handleEditCategory = (category) => {
-  //   setNewEmoji(category.emoji);
-  //   setNewName(category.name);
-  //   setNewImportance(category.importance);
-  //   setNewKey(category.id);
-  //   setShowInputs(true);
-  // };
-
   const handleClickAddNewCategory = async () => {
     setShowInputs(true);
     setIsEditing(true);
     setUpsertError('');
   };
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     console.log('TODO: save changes');
+    if (showInputs) {
+      const newKey = 'tempKey'
+      setUpdatedCategories({
+        ...updatedCategories,
+        [newKey]: {
+          emoji: newEmoji,
+          name: newName,
+          importance: newImportance,
+          id: newKey,
+        },
+      });
+    }
     setInitialCategories({
       ...updatedCategories,
     });
@@ -198,7 +207,7 @@ const Categories = () => {
   const handleYes = () => {
     if (confirmationModal.type === ConfirmationType.save) {
       saveChanges();
-    } else if (confirmationModal.type === ConfirmationType.close) {
+    } else if (confirmationModal.type === ConfirmationType.cancel) {
       cancelChanges();
     }
 
@@ -221,6 +230,8 @@ const Categories = () => {
     setIsEditing(true);
   };
 
+
+
   return (
     <div className="flex flex-col grow items-center py-4">
       <div className="grid grid-cols-3 items-center w-5/6">
@@ -242,6 +253,9 @@ const Categories = () => {
           />
         </div>
       </div>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
       <div className="flex flex-col mt-4 w-5/6">
         <div className="flex flex-col items-center">
           {/* Fixed Headers */}
@@ -296,17 +310,18 @@ const Categories = () => {
           </div>
         </div>
       </div>
-      {!showInputs && upsertError && (
+      )}
+      {upsertError && (
         <div className="text-red-500">{upsertError}</div>
       )}
-      {/* cover fixed icon tray with close and save buttons if isEditing. TODO: replace icon tray, currently z-index isn't working*/}
+      {/* TODO: replace icon tray, currently z-index isn't working*/}
       {isEditing && (
         <div className="mt-auto grid grid-cols-2 items-center text-shuttle-gray-200 bg-ebony-950 h-20 z-100 w-full border-b-2 border-revolver-900">
           <button
             className="w-full text-center"
-            onClick={() => handleClickClose()}
+            onClick={() => handleClickCancel()}
           >
-            Close
+            Cancel
           </button>
           <button
             className="w-full text-center"

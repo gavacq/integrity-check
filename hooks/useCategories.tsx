@@ -2,7 +2,7 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
-import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { firebaseApp } from "utils/firebase";
 
 export interface Category {
@@ -47,6 +47,45 @@ export const addCategory = async (category: { name: string, importance: number, 
   });
   console.log("Document added with ID: ", ref.id);
 }
+
+export const updateCategories = async (categories: Record<string, Category>, userId: string) => {
+  const db = getFirestore();
+  const batch = writeBatch(db);
+
+  const updatedCategories: Record<string, Category> = {};
+
+  for (const [key, category] of Object.entries(categories)) {
+    if (key === 'tempKey') {
+      // Handle new category
+      const newDocRef = doc(collection(db, 'categories'));
+      batch.set(newDocRef, {
+        name: category.name,
+        importance: category.importance,
+        emoji: category.emoji,
+        userId,
+      });
+      updatedCategories[newDocRef.id] = { ...category, id: newDocRef.id };
+    } else {
+      // Handle existing category
+      const categoryRef = doc(db, 'categories', category.id);
+      batch.update(categoryRef, {
+        name: category.name,
+        importance: category.importance,
+        emoji: category.emoji,
+      });
+      updatedCategories[category.id] = { ...category };
+    }
+  }
+
+  try {
+    await batch.commit();
+    console.log('Batched updates successful');
+    return updatedCategories;
+  } catch (error) {
+    console.error('Error updating categories:', error);
+    throw error;
+  }
+};
 
 // const initialState = {
 //   data: [],
