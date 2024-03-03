@@ -102,7 +102,7 @@ const Categories = () => {
         ...(showInputs ? { tempKey: newCategory } : {}),
       })
     );
-  }, [updatedCategories, newCategory]);
+  }, [updatedCategories, newCategory, showInputs]);
 
   const handleEditCategory = (categoryKey, field, value) => {
     let updatedValue = value;
