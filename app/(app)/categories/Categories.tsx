@@ -20,6 +20,23 @@ enum ConfirmationType {
   delete = 'delete',
 }
 
+const calculateRemainingImportance = (categories: Record<string, Category>) => {
+  const totalImportance = Object.values(categories).reduce((acc, category) => {
+    const importanceValue = parseFloat(category.importance.toString());
+    if (!isNaN(importanceValue)) {
+      acc += importanceValue;
+    } else {
+      console.error('Invalid importance value:', {
+        category,
+        importanceValue,
+      });
+    }
+    return acc;
+  }, 0);
+
+  return 100 - totalImportance;
+};
+
 const Categories = () => {
   const [initalCategories, setInitialCategories] = useState<
     Record<string, Category>
@@ -28,8 +45,6 @@ const Categories = () => {
     Record<string, Category>
   >({});
   const [showInputs, setShowInputs] = useState(false);
-  const [newName, setNewName] = useState('My Category');
-  const [newImportance, setNewImportance] = useState(0);
   const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -48,6 +63,12 @@ const Categories = () => {
     id: 'tempKey',
   });
   const [focusedRow, setFocusedRow] = useState<string | null>(null);
+  const [remainingImportance, setRemainingImportance] = useState(
+    calculateRemainingImportance({
+      ...updatedCategories,
+      ...(showInputs ? { tempKey: newCategory } : {}),
+    })
+  );
 
   useEffect(() => {
     getCategories(currentUser?.uid || '')
@@ -64,6 +85,7 @@ const Categories = () => {
             return acc;
           }, {} as Record<string, Category>)
         );
+        setRemainingImportance;
         setIsLoading(false);
       })
       .catch((error) => {
@@ -72,35 +94,30 @@ const Categories = () => {
         setIsLoading(false);
       });
   }, [currentUser?.uid]);
-  // const handleAddCategory = async () => {
-  //   try {
-  //     await addCategory({
-  //       name: newName,
-  //       importance: parseInt(newImportance),
-  //       emoji: newEmoji,
-  //       userId: currentUser?.uid || '',
-  //       id: newKey,
-  //     });
-  //   } catch (error) {
-  //     console.error('Error adding category', error);
-  //     setUpsertError('Error adding category: ' + error);
-  //   }
 
-  //   setNewKey(undefined);
-  //   setNewName('');
-  //   setNewImportance('');
-  //   setShowInputs(false);
-  //   const allCategories = await getCategories(currentUser?.uid || '');
-
-  //   setCategories(allCategories);
-  // };
+  useEffect(() => {
+    setRemainingImportance(
+      calculateRemainingImportance({
+        ...updatedCategories,
+        ...(showInputs ? { tempKey: newCategory } : {}),
+      })
+    );
+  }, [updatedCategories, newCategory]);
 
   const handleEditCategory = (categoryKey, field, value) => {
+    let updatedValue = value;
+
+    // If the field being edited is 'importance', ensure it's not less than 0
+    if (field === 'importance') {
+      const numericValue = parseFloat(value);
+      updatedValue = isNaN(numericValue) ? 0 : Math.max(numericValue, 0);
+    }
+
     setUpdatedCategories({
       ...updatedCategories,
       [categoryKey]: {
         ...updatedCategories[categoryKey],
-        [field]: value,
+        [field]: updatedValue,
       },
     });
   };
@@ -229,8 +246,11 @@ const Categories = () => {
 
       await deleteCategory(categoryKey);
 
-      const { [categoryKey]: _, ...updatedCategoriesCopy } = updatedCategories;
+      const { [categoryKey]: y, ...updatedCategoriesCopy } = updatedCategories;
       setUpdatedCategories(updatedCategoriesCopy);
+
+      const { [categoryKey]: x, ...initalCategoriesCopy } = initalCategories;
+      setInitialCategories(initalCategoriesCopy);
       setFocusedRow(null);
       setUpsertError('');
     } catch (error) {
@@ -328,17 +348,28 @@ const Categories = () => {
                       }
                     />
                     {focusedRow === category[0] && (
-                      <button
-                        className="col-start-5 cursor-pointer"
-                        type="button"
-                        onClick={() => handleClickDelete(category[0])}
-                      >
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          size="sm"
-                          className="text-lunar-green-200 cursor-pointer"
-                        />
-                      </button>
+                      <>
+                        <span
+                          className={`flex justify-center items-center font-extralight ${
+                            remainingImportance < 0
+                              ? 'text-red-600'
+                              : 'text-lunar-green-400'
+                          }`}
+                        >
+                          {remainingImportance}
+                        </span>
+                        <button
+                          className="cursor-pointer"
+                          type="button"
+                          onClick={() => handleClickDelete(category[0])}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            size="sm"
+                            className="text-lunar-green-200 cursor-pointer"
+                          />
+                        </button>
+                      </>
                     )}
                   </div>
                 ) : (
@@ -357,6 +388,20 @@ const Categories = () => {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {!isEditing && remainingImportance < 0 && (
+        <div className="text-red-500 w-5/6 my-4 font-light">
+          {`Your importance points sum is ${
+            100 - remainingImportance
+          }. Daily integrity ratings will not be available until the sum of importances is equal to 100. Please edit your
+          categories.`}
+        </div>
+      )}
+      {!isEditing && remainingImportance > 0 && (
+        <div className="text-lunar-green-300 w-5/6 my-4 font-light">
+          {`You have ${remainingImportance} importance points remaining. Daily integrity ratings will not be available until the sum of importances is equal to 100. Please edit your categories.`}
         </div>
       )}
       {upsertError && <div className="text-red-500">{upsertError}</div>}
