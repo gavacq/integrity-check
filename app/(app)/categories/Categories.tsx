@@ -1,7 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
-import { Category, addCategory, getCategories } from 'hooks/useCategories';
+import {
+  Category,
+  addCategory,
+  getCategories,
+  updateCategories,
+} from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
@@ -35,25 +40,27 @@ const Categories = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    getCategories(currentUser?.uid || '').then((categories) => {
-      setInitialCategories(
-        categories.reduce((acc, category) => {
-          acc[category.id] = category;
-          return acc;
-        }, {} as Record<string, Category>)
-      );
-      setUpdatedCategories(
-        categories.reduce((acc, category) => {
-          acc[category.id] = category;
-          return acc;
-        }, {} as Record<string, Category>)
-      );
-      setIsLoading(false);
-    }).catch((error) => {
-      console.error('Error getting categories:', error);
-      setUpsertError('Error getting categories: ' + error);
-      setIsLoading(false);
-    })
+    getCategories(currentUser?.uid || '')
+      .then((categories) => {
+        setInitialCategories(
+          categories.reduce((acc, category) => {
+            acc[category.id] = category;
+            return acc;
+          }, {} as Record<string, Category>)
+        );
+        setUpdatedCategories(
+          categories.reduce((acc, category) => {
+            acc[category.id] = category;
+            return acc;
+          }, {} as Record<string, Category>)
+        );
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error getting categories:', error);
+        setUpsertError('Error getting categories: ' + error);
+        setIsLoading(false);
+      });
   }, [currentUser?.uid]);
 
   const NewCategory = () => {
@@ -138,7 +145,7 @@ const Categories = () => {
         [field]: value,
       },
     });
-  }
+  };
 
   const handleClickSave = async () => {
     setConfirmationModal({
@@ -175,28 +182,48 @@ const Categories = () => {
   };
 
   const saveChanges = async () => {
-    console.log('TODO: save changes');
-    if (showInputs) {
-      const newKey = 'tempKey'
-      setUpdatedCategories({
+    let savedCategories: Record<string, Category> = {};
+    try {
+      if (!currentUser?.uid) {
+        throw new Error('currentUser.uid is undefined');
+      }
+
+      let categoriesToSave = {
         ...updatedCategories,
-        [newKey]: {
-          emoji: newEmoji,
-          name: newName,
-          importance: newImportance,
-          id: newKey,
-        },
-      });
+      } as Record<string, Category>;
+
+      if (showInputs) {
+        categoriesToSave = {
+          ...categoriesToSave,
+          tempKey: {
+            emoji: newEmoji,
+            name: newName,
+            importance: newImportance,
+            id: 'tempKey',
+          },
+        };
+      }
+
+      savedCategories = await updateCategories(
+        categoriesToSave,
+        currentUser.uid
+      );
+    } catch (error) {
+      console.error('Error updating categories:', error);
+      setUpsertError('Error updating categories: ' + error);
     }
+
     setInitialCategories({
-      ...updatedCategories,
+      ...savedCategories,
+    });
+    setUpdatedCategories({
+      ...savedCategories,
     });
     setIsEditing(false);
     setShowInputs(false);
   };
 
   const cancelChanges = () => {
-    console.log('TODO: cancel changes');
     setUpdatedCategories({
       ...initalCategories,
     });
@@ -230,8 +257,6 @@ const Categories = () => {
     setIsEditing(true);
   };
 
-
-
   return (
     <div className="flex flex-col grow items-center py-4">
       <div className="grid grid-cols-3 items-center w-5/6">
@@ -256,64 +281,72 @@ const Categories = () => {
       {isLoading ? (
         <LoadingSpinner />
       ) : (
-      <div className="flex flex-col mt-4 w-5/6">
-        <div className="flex flex-col items-center">
-          {/* Fixed Headers */}
-          <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full bg-ebony-950 text-lunar-green-200 font-bold">
-            <div className="text-center">Emoji</div>
-            <div className="text-left">Name</div>
-            <div className="text-left">Importance</div>
-          </div>
-          {showInputs && <NewCategory />}
+        <div className="flex flex-col mt-4 w-5/6">
+          <div className="flex flex-col items-center">
+            {/* Fixed Headers */}
+            <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full bg-ebony-950 text-lunar-green-200 font-bold">
+              <div className="text-center">Emoji</div>
+              <div className="text-left">Name</div>
+              <div className="text-left">Importance</div>
+            </div>
+            {showInputs && <NewCategory />}
 
-          {/* Scrollable Grid Body */}
-          <div
-            className="grid grid-cols-[1fr,3fr,1fr,1fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
-            style={{ maxHeight: 'calc(100vh - 500px)' }}
-          >
-            {Object.entries(updatedCategories).map((category) => (
-              isEditing ? (
-              <React.Fragment key={category[0]}>
-                <input
-                  className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
-                  type='text'
-                  value={category[1].emoji}
-                  onChange={(e) => handleEditCategory(category[0], 'emoji', e.target.value)}
-                />
-                <input
-                  className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8"
-                  type='text'
-                  value={category[1].name}
-                  onChange={(e) => handleEditCategory(category[0], 'name', e.target.value)}
-                />
-                <input
-                  className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8"
-                  type='number'
-                  value={category[1].importance}
-                  onChange={(e) => handleEditCategory(category[0], 'importance', e.target.value)}
-                />
-              </React.Fragment>
-              ) : (
-              <React.Fragment key={category[0]}>
-                <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
-                  {category[1].emoji}
-                </div>
-                <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">
-                  {category[1].name}
-                </div>
-                <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
-                  {category[1].importance}
-                </div>
-              </React.Fragment>
-              )
-            ))}
+            {/* Scrollable Grid Body */}
+            <div
+              className="grid grid-cols-[1fr,3fr,1fr,1fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
+              style={{ maxHeight: 'calc(100vh - 500px)' }}
+            >
+              {Object.entries(updatedCategories).map((category) =>
+                isEditing ? (
+                  <React.Fragment key={category[0]}>
+                    <input
+                      className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
+                      type="text"
+                      value={category[1].emoji}
+                      onChange={(e) =>
+                        handleEditCategory(category[0], 'emoji', e.target.value)
+                      }
+                    />
+                    <input
+                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                      type="text"
+                      value={category[1].name}
+                      onChange={(e) =>
+                        handleEditCategory(category[0], 'name', e.target.value)
+                      }
+                    />
+                    <input
+                      className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                      type="number"
+                      value={category[1].importance}
+                      onChange={(e) =>
+                        handleEditCategory(
+                          category[0],
+                          'importance',
+                          e.target.value
+                        )
+                      }
+                    />
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment key={category[0]}>
+                    <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
+                      {category[1].emoji}
+                    </div>
+                    <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">
+                      {category[1].name}
+                    </div>
+                    <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
+                      {category[1].importance}
+                    </div>
+                  </React.Fragment>
+                )
+              )}
+            </div>
           </div>
         </div>
-      </div>
       )}
-      {upsertError && (
-        <div className="text-red-500">{upsertError}</div>
-      )}
+      {upsertError && <div className="text-red-500">{upsertError}</div>}
       {/* TODO: replace icon tray, currently z-index isn't working*/}
       {isEditing && (
         <div className="mt-auto grid grid-cols-2 items-center text-shuttle-gray-200 bg-ebony-950 h-20 z-100 w-full border-b-2 border-revolver-900">
