@@ -2,7 +2,7 @@
 // import firebase from 'firebase/app';
 // import 'firebase/firestore';
 
-import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, where, writeBatch } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { firebaseApp } from "utils/firebase";
 
 export interface Category {
@@ -86,6 +86,18 @@ export const updateCategories = async (categories: Record<string, Category>, use
     throw error;
   }
 };
+
+export const deleteCategory = async (categoryId: string) => {
+  const db = getFirestore();
+
+  try {
+    await deleteDoc(doc(db, 'categories', categoryId));
+    console.log('Document successfully deleted');
+  } catch (error) {
+    console.error('Error removing document:', error);
+    throw error;
+  }
+}
 
 // const initialState = {
 //   data: [],

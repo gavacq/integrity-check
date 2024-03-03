@@ -25,7 +25,7 @@ const NewCategory = ({
   };
 
   return (
-    <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full mb-4 mt-2 h-8 items-center">
+    <div className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] w-full mb-4 mt-2 h-8 items-center">
       <div className="flex col-start-1 border-b border-shuttle-gray-300 h-8 bg-shuttle-gray-950">
         <input
           type="text"

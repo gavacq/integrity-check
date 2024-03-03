@@ -4,18 +4,20 @@ import EmojiPicker from 'emoji-picker-react';
 import {
   Category,
   addCategory,
+  deleteCategory,
   getCategories,
   updateCategories,
 } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faGear, faTrash } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from 'components/LoadingSpinner';
 import NewCategory from './NewCategory';
 
 enum ConfirmationType {
   save = 'save',
   cancel = 'cancel',
+  delete = 'delete',
 }
 
 const Categories = () => {
@@ -45,6 +47,7 @@ const Categories = () => {
     emoji: '❓',
     id: 'tempKey',
   });
+  const [focusedRow, setFocusedRow] = useState<string | null>(null);
 
   useEffect(() => {
     getCategories(currentUser?.uid || '')
@@ -160,6 +163,7 @@ const Categories = () => {
         categoriesToSave,
         currentUser.uid
       );
+      setUpsertError('');
     } catch (error) {
       console.error('Error updating categories:', error);
       setUpsertError('Error updating categories: ' + error);
@@ -184,10 +188,18 @@ const Categories = () => {
   };
 
   const handleYes = () => {
-    if (confirmationModal.type === ConfirmationType.save) {
-      saveChanges();
-    } else if (confirmationModal.type === ConfirmationType.cancel) {
-      cancelChanges();
+    switch (confirmationModal.type) {
+      case ConfirmationType.save:
+        saveChanges();
+        break;
+      case ConfirmationType.cancel:
+        cancelChanges();
+        break;
+      case ConfirmationType.delete:
+        handleDeleteCategory(focusedRow);
+        break;
+      default:
+        break;
     }
 
     setConfirmationModal({
@@ -207,6 +219,32 @@ const Categories = () => {
 
   const handleClickEditMode = () => {
     setIsEditing(true);
+  };
+
+  const handleDeleteCategory = async (categoryKey) => {
+    try {
+      if (!currentUser?.uid) {
+        throw new Error('currentUser.uid is undefined');
+      }
+
+      await deleteCategory(categoryKey);
+
+      const { [categoryKey]: _, ...updatedCategoriesCopy } = updatedCategories;
+      setUpdatedCategories(updatedCategoriesCopy);
+      setFocusedRow(null);
+      setUpsertError('');
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      setUpsertError('Error deleting category: ' + error);
+    }
+  };
+
+  const handleClickDelete = (categoryKey) => {
+    setConfirmationModal({
+      open: true,
+      message: `⚠️ Are you sure you want to delete the ${updatedCategories[categoryKey].name} category? This is irreversible. All associated data will be lost`,
+      type: ConfirmationType.delete,
+    });
   };
 
   return (
@@ -236,7 +274,7 @@ const Categories = () => {
         <div className="flex flex-col mt-4 w-5/6">
           <div className="flex flex-col items-center">
             {/* Fixed Headers */}
-            <div className="grid grid-cols-[1fr,3fr,1fr,1fr] w-full bg-ebony-950 text-lunar-green-200 font-bold">
+            <div className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] w-full bg-ebony-950 text-lunar-green-200 font-bold text-sm">
               <div className="text-center">Emoji</div>
               <div className="text-left">Name</div>
               <div className="text-left">Importance</div>
@@ -250,12 +288,17 @@ const Categories = () => {
 
             {/* Scrollable Grid Body */}
             <div
-              className="grid grid-cols-[1fr,3fr,1fr,1fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
+              className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
               style={{ maxHeight: 'calc(100vh - 500px)' }}
             >
               {Object.entries(updatedCategories).map((category) =>
                 isEditing ? (
-                  <React.Fragment key={category[0]}>
+                  <div
+                    key={category[0]}
+                    className="contents"
+                    onFocus={() => setFocusedRow(category[0])}
+                    tabIndex={0} // Make the div focusable
+                  >
                     <input
                       className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
                       type="text"
@@ -284,9 +327,22 @@ const Categories = () => {
                         )
                       }
                     />
-                  </React.Fragment>
+                    {focusedRow === category[0] && (
+                      <button
+                        className="col-start-5 cursor-pointer"
+                        type="button"
+                        onClick={() => handleClickDelete(category[0])}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          size="sm"
+                          className="text-lunar-green-200 cursor-pointer"
+                        />
+                      </button>
+                    )}
+                  </div>
                 ) : (
-                  <React.Fragment key={category[0]}>
+                  <div key={category[0]} className="contents">
                     <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
                       {category[1].emoji}
                     </div>
@@ -296,7 +352,7 @@ const Categories = () => {
                     <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
                       {category[1].importance}
                     </div>
-                  </React.Fragment>
+                  </div>
                 )
               )}
             </div>
