@@ -10,7 +10,12 @@ import {
 } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faGear, faTrash, faPencil } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus,
+  faGear,
+  faTrash,
+  faPencil,
+} from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from 'components/LoadingSpinner';
 import NewCategory from './NewCategory';
 
@@ -22,7 +27,12 @@ enum ConfirmationType {
 
 const calculateRemainingImportance = (categories: Record<string, Category>) => {
   const totalImportance = Object.values(categories).reduce((acc, category) => {
-    const importanceValue = parseFloat(category.importance.toString());
+    if (category.importance.toString() === '') {
+      acc += 0 // Allow empty string to allow user to clear the field
+      return acc
+    }
+
+    const importanceValue = parseInt(category.importance.toString());
     if (!isNaN(importanceValue)) {
       acc += importanceValue;
     } else {
@@ -109,8 +119,12 @@ const Categories = () => {
 
     // If the field being edited is 'importance', ensure it's not less than 0
     if (field === 'importance') {
-      const numericValue = parseFloat(value);
-      updatedValue = isNaN(numericValue) ? 0 : Math.max(numericValue, 0);
+      if (value === '') {
+        updatedValue = ''; // Allow empty string to allow user to clear the field
+      } else {
+        const numericValue = parseFloat(value);
+        updatedValue = isNaN(numericValue) ? 0 : Math.max(numericValue, 0);
+      }
     }
 
     setUpdatedCategories({
@@ -121,6 +135,12 @@ const Categories = () => {
       },
     });
   };
+
+  const handleBlurImportance = (categoryKey, value) => {
+    if (value === '') {
+      handleEditCategory(categoryKey, 'importance', 0);
+    }
+  }
 
   const handleClickSave = async () => {
     setConfirmationModal({
@@ -346,6 +366,7 @@ const Categories = () => {
                           e.target.value
                         )
                       }
+                      onBlur={() => handleBlurImportance(category[0], category[1].importance)}
                     />
                     {focusedRow === category[0] && (
                       <>
