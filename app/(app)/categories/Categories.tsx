@@ -164,7 +164,7 @@ const Categories = () => {
     setShowEmojiPicker(false); // Hide emoji picker after selection
   };
 
-  const closeModal = (e) => {
+  const closeEmojiModal = (e) => {
     if (e.target === e.currentTarget) {
       setShowEmojiPicker(false);
     }
@@ -348,7 +348,27 @@ const Categories = () => {
                       onChange={(e) =>
                         handleEditCategory(category[0], 'emoji', e.target.value)
                       }
+                      onFocus={() => setShowEmojiPicker(true)}
                     />
+                    {showEmojiPicker && (
+                      <div
+                        onClick={closeEmojiModal}
+                        style={{
+                          position: 'fixed',
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          zIndex: 1000,
+                        }}
+                      >
+                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                      </div>
+                    )}
                     <input
                       className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8"
                       type="text"
