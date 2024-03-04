@@ -323,6 +323,8 @@ const Categories = () => {
               <NewCategory
                 category={newCategory}
                 setCategory={setNewCategory}
+                setFocusExistingCategories={setFocusedRow}
+                remainingImportance={remainingImportance}
               />
             )}
 
