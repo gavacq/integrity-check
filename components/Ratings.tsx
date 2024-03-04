@@ -19,6 +19,10 @@ export interface Rating {
   value: number;
 }
 
+export interface DailyRating {
+  
+}
+
 const Ratings = () => {
   const [categories, setCategories] = useState<Array<Category>>([]);
   const [currentCategory, setCurrentCategory] = useState<Category | undefined>(
@@ -120,6 +124,7 @@ const Ratings = () => {
 
   const handleSubmit = () => {
     const score = calculateScore();
+    // save DailyRating to database
     setScore(score);
     setSubmitted(true);
     setReviewOpen(false);

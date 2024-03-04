@@ -160,7 +160,7 @@ const Categories = () => {
   };
 
   const onEmojiClick = (event) => {
-    setNewEmoji(event.emoji);
+    handleEditCategory(focusedRow, 'emoji', event.emoji);
     setShowEmojiPicker(false); // Hide emoji picker after selection
   };
 
@@ -345,9 +345,6 @@ const Categories = () => {
                       className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
                       type="text"
                       value={category[1].emoji}
-                      onChange={(e) =>
-                        handleEditCategory(category[0], 'emoji', e.target.value)
-                      }
                       onFocus={() => setShowEmojiPicker(true)}
                     />
                     {showEmojiPicker && (
