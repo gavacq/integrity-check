@@ -10,7 +10,7 @@ import {
 } from 'hooks/useCategories';
 import { useAuth } from 'providers/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faGear, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faGear, faTrash, faPencil } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from 'components/LoadingSpinner';
 import NewCategory from './NewCategory';
 
@@ -272,7 +272,7 @@ const Categories = () => {
       <div className="grid grid-cols-3 items-center w-5/6">
         <div className="text-left">
           <FontAwesomeIcon
-            icon={faGear}
+            icon={faPencil}
             size="sm"
             className="text-lunar-green-200 cursor-pointer"
             onClick={() => handleClickEditMode()}
