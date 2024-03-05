@@ -62,7 +62,7 @@ const NewCategory = ({
 
   return (
     <div
-      className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] w-full mb-4 mt-2 h-8 items-center"
+      className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] w-full mb-4 mt-2 h-8 items-center"
       onFocus={() => handleFocus()}
       onBlur={() => handleBlur(category.importance)}
     >

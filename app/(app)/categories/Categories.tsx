@@ -15,9 +15,13 @@ import {
   faGear,
   faTrash,
   faPencil,
+  faCheck,
+  faCheckDouble,
+  faCancel,
 } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from 'components/LoadingSpinner';
 import NewCategory from './NewCategory';
+import { faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 
 enum ConfirmationType {
   save = 'save',
@@ -28,8 +32,8 @@ enum ConfirmationType {
 const calculateRemainingImportance = (categories: Record<string, Category>) => {
   const totalImportance = Object.values(categories).reduce((acc, category) => {
     if (category.importance.toString() === '') {
-      acc += 0 // Allow empty string to allow user to clear the field
-      return acc
+      acc += 0; // Allow empty string to allow user to clear the field
+      return acc;
     }
 
     const importanceValue = parseInt(category.importance.toString());
@@ -140,10 +144,11 @@ const Categories = () => {
     if (value === '') {
       handleEditCategory(categoryKey, 'importance', 0);
     }
-  }
+  };
 
   const handleClickSave = async () => {
-    saveChanges()
+    saveChanges();
+    setFocusedRow(null);
   };
 
   const handleClickCancel = () => {
@@ -230,6 +235,7 @@ const Categories = () => {
     });
     setIsEditing(false);
     setShowInputs(false);
+    setFocusedRow(null);
   };
 
   const handleYes = () => {
@@ -299,14 +305,33 @@ const Categories = () => {
     <div className="flex flex-col grow items-center py-4">
       <div className="grid grid-cols-3 items-center w-5/6">
         <div className="text-left">
-          <FontAwesomeIcon
-            icon={faPencil}
-            size="sm"
-            className="text-lunar-green-200 cursor-pointer"
-            onClick={() => handleClickEditMode()}
-          />
+          {isEditing ? (
+            <div className="grid grid-cols-3 items-left">
+              <FontAwesomeIcon
+                icon={faCheck}
+                size="sm"
+                className="text-lunar-green-200 cursor-pointer"
+                onClick={() => handleClickSave()}
+              />
+              <FontAwesomeIcon
+                icon={faCancel}
+                size="sm"
+                className="text-lunar-green-200 cursor-pointer"
+                onClick={() => handleClickCancel()}
+              />
+            </div>
+          ) : (
+            <FontAwesomeIcon
+              icon={faPencil}
+              size="sm"
+              className="text-lunar-green-200 cursor-pointer"
+              onClick={() => handleClickEditMode()}
+            />
+          )}
         </div>
-        <h1 className="text-lunar-green-300 text-center">Categories</h1>
+        <h1 className="text-lunar-green-300 text-center">
+          {isEditing ? 'Edit Categories' : 'Categories'}
+        </h1>
         <div className="text-right">
           <FontAwesomeIcon
             icon={faPlus}
@@ -322,8 +347,8 @@ const Categories = () => {
         <div className="flex flex-col mt-4 w-5/6">
           <div className="flex flex-col items-center">
             {/* Fixed Headers */}
-            <div className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] w-full bg-ebony-950 text-lunar-green-200 font-bold text-sm">
-              <div className="text-center">Emoji</div>
+            <div className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] w-full bg-ebony-950 text-lunar-green-200 font-bold text-sm">
+              <div className="text-center col-start-1">Emoji</div>
               <div className="text-left">Name</div>
               <div className="text-left">Importance</div>
             </div>
@@ -338,7 +363,7 @@ const Categories = () => {
 
             {/* Scrollable Grid Body */}
             <div
-              className="grid grid-cols-[1fr,3fr,1fr,1fr,0.5fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
+              className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
               style={{ maxHeight: 'calc(100vh - 500px)' }}
             >
               {Object.entries(updatedCategories).map((category) =>
@@ -376,7 +401,7 @@ const Categories = () => {
                       </div>
                     )}
                     <input
-                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8 overflow-hidden whitespace-nowrap text-ellipsis"
                       type="text"
                       value={category[1].name}
                       onChange={(e) =>
@@ -384,7 +409,7 @@ const Categories = () => {
                       }
                     />
                     <input
-                      className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8"
+                      className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8 "
                       type="number"
                       value={category[1].importance}
                       onChange={(e) =>
@@ -394,7 +419,12 @@ const Categories = () => {
                           e.target.value
                         )
                       }
-                      onBlur={() => handleBlurImportance(category[0], category[1].importance)}
+                      onBlur={() =>
+                        handleBlurImportance(
+                          category[0],
+                          category[1].importance
+                        )
+                      }
                     />
                     {focusedRow === category[0] && (
                       <>
@@ -454,23 +484,6 @@ const Categories = () => {
         </div>
       )}
       {upsertError && <div className="text-red-500">{upsertError}</div>}
-      {/* TODO: replace icon tray, currently z-index isn't working*/}
-      {isEditing && (
-        <div className="mt-auto grid grid-cols-2 items-center text-shuttle-gray-200 bg-ebony-950 h-20 z-100 w-full border-b-2 border-revolver-900">
-          <button
-            className="w-full text-center"
-            onClick={() => handleClickCancel()}
-          >
-            Cancel
-          </button>
-          <button
-            className="w-full text-center"
-            onClick={() => handleClickSave()}
-          >
-            Save
-          </button>
-        </div>
-      )}
       {confirmationModal.open && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-lunar-green-300">
           <div className="bg-ebony-950 rounded-lg p-4 w-1/2">
