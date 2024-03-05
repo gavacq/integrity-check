@@ -390,10 +390,13 @@ const Categories = () => {
                         onClick={closeEmojiModal}
                         className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex  flex-col justify-center items-center z-50"
                       >
-                        <EmojiPicker onEmojiClick={onEmojiClick} />
-                        <button onClick={handleRemoveEmoji} className="mt-4 rounded-md bg-revolver-300 px-2 text-black">
+                        <button
+                          onClick={handleRemoveEmoji}
+                          className="mt-4 rounded-md bg-revolver-300 px-2 text-black"
+                        >
                           Remove Emoji
                         </button>
+                        <EmojiPicker onEmojiClick={onEmojiClick} />
                       </div>
                     )}
                     <input
