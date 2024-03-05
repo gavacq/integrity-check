@@ -379,7 +379,7 @@ const Categories = () => {
                     tabIndex={0} // Make the div focusable
                   >
                     <input
-                      className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
+                      className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-12"
                       type="text"
                       value={category[1].emoji}
                       readOnly
@@ -403,7 +403,7 @@ const Categories = () => {
                       </div>
                     )}
                     <input
-                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-8 overflow-hidden whitespace-nowrap text-ellipsis"
+                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-12 overflow-hidden whitespace-nowrap text-ellipsis"
                       type="text"
                       value={category[1].name}
                       onChange={(e) =>
@@ -411,7 +411,7 @@ const Categories = () => {
                       }
                     />
                     <input
-                      className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-8 "
+                      className="w-full text-center bg-transparent border-shuttle-gray-800 border-b-2 h-12"
                       type="number"
                       value={category[1].importance}
                       onChange={(e) =>
@@ -455,13 +455,13 @@ const Categories = () => {
                   </div>
                 ) : (
                   <div key={category[0]} className="contents">
-                    <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
+                    <div className="col-start-1 grid items-center justify-center border-shuttle-gray-800 border-b-2 h-12">
                       {category[1].emoji}
                     </div>
-                    <div className="text-left  border-shuttle-gray-800 border-b-2 h-8 overflow-hidden whitespace-nowrap text-ellipsis">
+                    <div className="grid items-center border-shuttle-gray-800 border-b-2 h-12 overflow-hidden whitespace-nowrap text-ellipsis">
                       {category[1].name}
                     </div>
-                    <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
+                    <div className="grid items-center justify-center border-shuttle-gray-800 border-b-2 h-12">
                       {category[1].importance}
                     </div>
                   </div>

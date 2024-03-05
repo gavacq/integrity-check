@@ -1,4 +1,4 @@
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import { Category } from 'hooks/useCategories';
 import { useState } from 'react';
 
@@ -66,11 +66,11 @@ const NewCategory = ({
       onFocus={() => handleFocus()}
       onBlur={() => handleBlur(category.importance)}
     >
-      <div className="flex col-start-1 border-b border-shuttle-gray-300 h-8 bg-shuttle-gray-950">
+      <div className="grid items-center justify-center col-start-1 border-b border-shuttle-gray-300 h-12 bg-shuttle-gray-950">
         <input
           type="text"
           value={category.emoji}
-          className="rounded-sm w-full bg-transparent text-lunar-green-100 text-center"
+          className="rounded-sm w-full bg-transparent text-lunar-green-100 text-center h-12"
           onFocus={() => setShowEmojiPicker(true)}
           readOnly // Add this if you want the field to be read-only
         />
@@ -90,11 +90,11 @@ const NewCategory = ({
               zIndex: 1000,
             }}
           >
-            <EmojiPicker onEmojiClick={onEmojiClick} />
+            <EmojiPicker onEmojiClick={onEmojiClick} emojiStyle={EmojiStyle.NATIVE} />
           </div>
         )}
       </div>
-      <div className="col-start-2 text-left border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
+      <div className="text-left border-b border-shuttle-gray-300 h-12 grid items-center justify-center bg-shuttle-gray-950">
         <input
           type="text"
           value={category.name}
@@ -107,7 +107,7 @@ const NewCategory = ({
           className="rounded-sm w-full bg-transparent text-lunar-green-100"
         />
       </div>
-      <div className="col-start-3 border-b border-shuttle-gray-300 h-8 flex bg-shuttle-gray-950">
+      <div className="border-b border-shuttle-gray-300 h-12 grid items-center justify-center bg-shuttle-gray-950">
         <input
           type="number"
           value={category.importance}
