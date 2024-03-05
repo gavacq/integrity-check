@@ -12,7 +12,15 @@ import { faGear, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from 'providers/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
-import { Rating, formatDailyRating, saveDailyRating } from 'hooks/useRatings';
+import {
+  DailyRating,
+  Rating,
+  formatDailyRating,
+  getDailyRatings,
+  saveDailyRating,
+} from 'hooks/useRatings';
+import { Timestamp } from 'firebase/firestore';
+import { get } from 'http';
 
 const Ratings = () => {
   const [categories, setCategories] = useState<Array<Category>>([]);
@@ -36,10 +44,18 @@ const Ratings = () => {
   const [isValidImportanceSum, setIsValidImportanceSum] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [score, setScore] = useState(0);
+  const [previousDailyRating, setPreviousDailyRating] = useState<
+    DailyRating | undefined
+  >(undefined);
   const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!currentUser) {
+        throw new Error('No current user');
+      }
+
+      // categories
       const allCategories = await getCategories(currentUser?.uid || '');
 
       // check if valid importance sum
@@ -62,6 +78,14 @@ const Ratings = () => {
         }, {} as Record<string, Rating>)
       );
       setCurrentCategory(allCategories[0]);
+
+      // daily rating
+      const date = Timestamp.now();
+      const todaysDailyRating = await getDailyRatings(currentUser.uid, date);
+      if (todaysDailyRating.length > 0) {
+        // get the most recent daily rating
+        setPreviousDailyRating(todaysDailyRating[todaysDailyRating.length - 1]);
+      }
       setIsLoading(false);
     };
 
@@ -108,10 +132,16 @@ const Ratings = () => {
   };
 
   const calculateScore = () => {
-    return Math.round(Object.values(ratings).reduce((acc, rating) => {
-      return acc + (rating.value - 1) * (categories.find((c) => c.id === rating.id)!.importance / 4);
-    }, 0));
-  }
+    return Math.round(
+      Object.values(ratings).reduce((acc, rating) => {
+        return (
+          acc +
+          (rating.value - 1) *
+            (categories.find((c) => c.id === rating.id)!.importance / 4)
+        );
+      }, 0)
+    );
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -124,7 +154,12 @@ const Ratings = () => {
       if (!currentUser) {
         throw new Error('No current user');
       }
-      const dailyRating = formatDailyRating(ratings, categoriesMap, currentUser.uid, dailyRatingScore);
+      const dailyRating = formatDailyRating(
+        ratings,
+        categoriesMap,
+        currentUser.uid,
+        dailyRatingScore
+      );
       await saveDailyRating(dailyRating);
       setScore(dailyRatingScore);
       setSubmitted(true);
@@ -135,6 +170,19 @@ const Ratings = () => {
       setIsLoading(false);
     }
   };
+
+  const handleOverwriteDailyRatings = () => {
+    setPreviousDailyRating(undefined);
+  }
+
+  const today = new Date();
+  // format date as user friendly text
+  const date = today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   if (isLoading || currentCategory === undefined) {
     return <LoadingSpinner />;
@@ -158,7 +206,7 @@ const Ratings = () => {
   if (!isValidImportanceSum) {
     return (
       <div className="grow flex items-center justify-center w-full">
-        <div className='flex items-center flex-col w-1/2'>
+        <div className="flex items-center flex-col w-1/2">
           <h1 className="text-lunar-green-300">
             The sum of importance points must be 100. Please edit your
             categories
@@ -177,7 +225,33 @@ const Ratings = () => {
 
   return (
     <div className="grow flex flex-col items-center justify-center w-full">
-      {!submitted && !reviewOpen && (
+      <h1
+        className='text-lunar-green-300 font-bold text-xl sm:text-4xl mb-48'
+      >
+        {date}
+      </h1>
+      {!submitted && !reviewOpen && previousDailyRating && (
+        <div
+          className='w-2/3 flex flex-col items-center'
+        >
+          <h2
+            className='text-lunar-green-300 font-bold text-2xl'
+          >
+            Today's score: {previousDailyRating.score}
+          </h2>
+          <h3 className="text-lunar-green-300 font-bold text-md my-6">
+            {`You already submitted a rating today. If you'd like to overwrite your ratings, you can do so below.`}
+          </h3>
+          <button
+            type='button'
+            className='bg-revolver-300 hover:bg-revolver-400 rounded-lg px-2 h-8'
+            onClick={() => handleOverwriteDailyRatings()}
+          >
+            Overwrite
+          </button>
+        </div>
+      )}
+      {!submitted && !reviewOpen && !previousDailyRating && (
         <>
           <div className="flex flex-col items-center">
             <h2 className="text-lunar-green-300 font-bold text-2xl">
@@ -227,9 +301,7 @@ const Ratings = () => {
             {Object.values(ratings).map((rating, i) => (
               <div key={rating.id} className="table-row">
                 <div
-                  onClick={() =>
-                    !submitted && handleSelectCategory(rating.id)
-                  }
+                  onClick={() => !submitted && handleSelectCategory(rating.id)}
                   className="table-cell p-2"
                 >
                   <h3 className="text-lunar-green-300 font-bold text-lg">

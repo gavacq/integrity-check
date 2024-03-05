@@ -1,4 +1,5 @@
 import {
+  Query,
   Timestamp,
   addDoc,
   collection,
@@ -42,11 +43,16 @@ export const saveDailyRating = async (dailyRating: DailyRating) => {
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
-    throw e
+    throw e;
   }
 };
 
-export const formatDailyRating = (ratings: Record<string, Rating>, categories: Record<string, Category>, userId: string, score: number) => {
+export const formatDailyRating = (
+  ratings: Record<string, Rating>,
+  categories: Record<string, Category>,
+  userId: string,
+  score: number
+) => {
   let dailyRating: DailyRating = {
     userId,
     date: Timestamp.now(),
@@ -64,5 +70,74 @@ export const formatDailyRating = (ratings: Record<string, Rating>, categories: R
   }
 
   return dailyRating;
-}
-  
+};
+
+export const getDailyRatings = async (
+  userId: string,
+  date?: Timestamp
+): Promise<DailyRating[]> => {
+  const db = getFirestore(firebaseApp);
+  let q: Query | undefined = undefined;
+  if (date) {
+    // Convert the Timestamp to a JavaScript Date object
+    const jsDate = date.toDate();
+
+    // Calculate the start and end of the day
+    const dayStart = startOfDay(jsDate);
+    const dayEnd = endOfDay(jsDate);
+
+    // Create Firestore Timestamps for the start and end of the day
+    const startTimestamp = Timestamp.fromDate(dayStart);
+    const endTimestamp = Timestamp.fromDate(dayEnd);
+
+    // Query for documents within the day
+    q = query(
+      collection(db, 'dailyRatings'),
+      where('userId', '==', userId),
+      where('date', '>=', startTimestamp),
+      where('date', '<', endTimestamp)
+    );
+  } else {
+    q = query(collection(db, 'dailyRatings'), where('userId', '==', userId));
+  }
+  const querySnapshot = await getDocs(q);
+  const dailyRatings: DailyRating[] = [];
+  querySnapshot.forEach((doc) => {
+    dailyRatings.push(doc.data() as DailyRating);
+  });
+  return dailyRatings;
+};
+
+/**
+ * Sets the time of a given date to the start of the day (00:00:00.000).
+ * @param {Date} date - The date for which the start of the day is calculated.
+ * @returns {Date} - A new Date object set to the start of the day.
+ */
+export const startOfDay = (date) => {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
+};
+
+/**
+ * Sets the time of a given date to the end of the day (23:59:59.999).
+ * @param {Date} date - The date for which the end of the day is calculated.
+ * @returns {Date} - A new Date object set to the end of the day.
+ */
+export const endOfDay = (date) => {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    23,
+    59,
+    59,
+    999
+  );
+};
