@@ -8,7 +8,7 @@ import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
 import { Category, getCategories } from 'hooks/useCategories';
 import Link from 'next/link';
-import { faGear, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from 'providers/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
@@ -72,7 +72,6 @@ const Ratings = () => {
       }
 
       setCategories(allCategories);
-      console.log(allCategories)
       setRatings(
         allCategories.reduce((acc, category) => {
           acc[category.id] = {
@@ -230,7 +229,7 @@ const Ratings = () => {
           </h1>
           <Link href="/categories" className="my-4">
             <FontAwesomeIcon
-              icon={faGear}
+              icon={faPencil}
               size="2x"
               className="text-lunar-green-200 cursor-pointer"
             />

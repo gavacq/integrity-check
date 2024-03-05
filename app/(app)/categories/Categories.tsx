@@ -143,11 +143,7 @@ const Categories = () => {
   }
 
   const handleClickSave = async () => {
-    setConfirmationModal({
-      open: true,
-      message: 'Are you sure you want to save?',
-      type: ConfirmationType.save,
-    });
+    saveChanges()
   };
 
   const handleClickCancel = () => {
@@ -345,6 +341,7 @@ const Categories = () => {
                       className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-8"
                       type="text"
                       value={category[1].emoji}
+                      readOnly
                       onFocus={() => setShowEmojiPicker(true)}
                     />
                     {showEmojiPicker && (
