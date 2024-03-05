@@ -35,13 +35,14 @@ export interface DailyRating {
   categoryRatings: { [categoryId: string]: CategoryRating };
 }
 
+// if dailyRatingId is provided, the function will overwrite the existing document with the same ID
 export const saveDailyRating = async (dailyRating: DailyRating, dailyRatingId?: string) => {
   const db = getFirestore(firebaseApp);
 
   try {
     if (dailyRatingId) {
       const ref = doc(db, 'dailyRatings', dailyRatingId);
-      await setDoc(ref, dailyRating, { merge: true });
+      await setDoc(ref, dailyRating);
       console.log('Document updated with ID: ', ref.id);
       return;
     }
