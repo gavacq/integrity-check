@@ -222,6 +222,12 @@ const Categories = () => {
     setUpdatedCategories({
       ...initalCategories,
     });
+    setNewCategory({
+      name: 'My Category',
+      importance: 0,
+      emoji: '❓',
+      id: 'tempKey',
+    });
     setIsEditing(false);
     setShowInputs(false);
   };
