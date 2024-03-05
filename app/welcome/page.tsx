@@ -21,7 +21,7 @@ export default function Page() {
           <strong>Integrity</strong> | /ɪnˈtɛɡrɪti/ <br />
           noun <br />
           {`The quality or state of being in alignment with one's values and
-          principles, especially in decision-making and actions. `}
+          principles.`}
           <br />
         </p>
       </div>
