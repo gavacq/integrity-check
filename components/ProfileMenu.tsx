@@ -18,7 +18,6 @@ const ProfileMenu = () => {
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
-      console.log('signed in with google', result)
       setShowMenu(false)
       router.push('/') 
     }).catch((error) => {

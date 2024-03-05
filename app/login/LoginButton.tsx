@@ -13,7 +13,6 @@ const LoginButton = () => {
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
-      console.log('signed in with google', result)
       router.push('/') 
     }).catch((error) => {
       console.error('error signing in with google', error)

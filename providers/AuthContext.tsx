@@ -1,10 +1,17 @@
-'use client'
+'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { firebaseApp } from 'utils/firebase';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { usePathname, useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 
 // Define the type for the context value
 interface AuthContextType {
@@ -36,8 +43,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setIsLoading(false);
-    });
 
+      if (user) {
+        posthog.identify(user.uid, {
+          email: user.email,
+          name: user.displayName,
+        });
+      }
+    });
 
     return () => unsubscribe();
   }, []);

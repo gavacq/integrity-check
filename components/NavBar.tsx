@@ -18,8 +18,8 @@ const NavBar = () => {
     <Link href="/" className="text-md sm:text-2xl font-bold text-lunar-green-300 col-start-3 col-end-8 justify-self-center">
       Integrity Check
     </Link>
-    <Link href="/feedback" className="text-md sm:text-2xl font-bold text-lunar-green-300 col-start-8 justify-self-center">
-      <FontAwesomeIcon icon={faEnvelope} />
+    <Link href="/feedback" className="text-md sm:text-2xl font-bold text-lunar-green-300 col-start-8 justify-self-left">
+      <FontAwesomeIcon icon={faEnvelope} size='lg' />
     </Link>
     <div className="col-start-9 justify-self-end pr-4 z-20">
       <ProfileMenu />
