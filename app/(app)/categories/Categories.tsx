@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import {
   Category,
   addCategory,
@@ -396,7 +396,10 @@ const Categories = () => {
                         >
                           Remove Emoji
                         </button>
-                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                        <EmojiPicker
+                          onEmojiClick={onEmojiClick}
+                          emojiStyle={EmojiStyle.NATIVE}
+                        />
                       </div>
                     )}
                     <input
