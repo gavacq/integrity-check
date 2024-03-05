@@ -456,13 +456,15 @@ const Categories = () => {
                 ) : (
                   <div key={category[0]} className="contents">
                     <div className="col-start-1 grid items-center justify-center border-shuttle-gray-800 border-b-2 h-12">
-                      {category[1].emoji}
+                      <span>{category[1].emoji}</span>
                     </div>
-                    <div className="grid items-center border-shuttle-gray-800 border-b-2 h-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                      {category[1].name}
+                    <div className="grid items-center border-shuttle-gray-800 border-b-2 h-12 ">
+                      <span className="text-ellipsis overflow-hidden whitespace-nowrap">
+                        {category[1].name}
+                      </span>
                     </div>
                     <div className="grid items-center justify-center border-shuttle-gray-800 border-b-2 h-12">
-                      {category[1].importance}
+                      <span>{category[1].importance}</span>
                     </div>
                   </div>
                 )
