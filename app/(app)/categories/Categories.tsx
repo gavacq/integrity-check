@@ -59,7 +59,6 @@ const Categories = () => {
     Record<string, Category>
   >({});
   const [showInputs, setShowInputs] = useState(false);
-  const [newEmoji, setNewEmoji] = useState('❓');
   const [upsertError, setUpsertError] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -138,6 +137,11 @@ const Categories = () => {
         [field]: updatedValue,
       },
     });
+  };
+
+  const handleRemoveEmoji = () => {
+    handleEditCategory(focusedRow, 'emoji', '');
+    setShowEmojiPicker(false);
   };
 
   const handleBlurImportance = (categoryKey, value) => {
@@ -384,20 +388,12 @@ const Categories = () => {
                     {showEmojiPicker && (
                       <div
                         onClick={closeEmojiModal}
-                        style={{
-                          position: 'fixed',
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          zIndex: 1000,
-                        }}
+                        className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex  flex-col justify-center items-center z-50"
                       >
                         <EmojiPicker onEmojiClick={onEmojiClick} />
+                        <button onClick={handleRemoveEmoji} className="mt-4 rounded-md bg-revolver-300 px-2 text-black">
+                          Remove Emoji
+                        </button>
                       </div>
                     )}
                     <input
