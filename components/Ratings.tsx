@@ -268,7 +268,7 @@ const Ratings = () => {
           </button>
         </div>
       )}
-      {!submitted && !reviewOpen && !showPreviousDailyRating && (
+      {!submitted && !reviewOpen && !showPreviousDailyRating && currentCategory && (
         <>
           <div className="flex flex-col items-center">
             <h2 className="text-lunar-green-300 font-bold text-2xl">
