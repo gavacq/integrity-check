@@ -196,6 +196,12 @@ const Categories = () => {
         categoriesToSave,
         currentUser.uid
       );
+      setNewCategory({
+        name: 'My Category',
+        importance: 0,
+        emoji: '❓',
+        id: 'tempKey',
+      });
       setUpsertError('');
     } catch (error) {
       console.error('Error updating categories:', error);
@@ -414,7 +420,7 @@ const Categories = () => {
                     <div className="col-start-1 text-center border-shuttle-gray-800 border-b-2 h-8">
                       {category[1].emoji}
                     </div>
-                    <div className="text-left  border-shuttle-gray-800 border-b-2 h-8">
+                    <div className="text-left  border-shuttle-gray-800 border-b-2 h-8 overflow-hidden whitespace-nowrap text-ellipsis">
                       {category[1].name}
                     </div>
                     <div className="text-center  border-shuttle-gray-800 border-b-2 h-8">
