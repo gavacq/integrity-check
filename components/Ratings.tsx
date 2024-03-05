@@ -12,16 +12,7 @@ import { faGear, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from 'providers/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
-
-export interface Rating {
-  id: string,
-  name: string;
-  value: number;
-}
-
-export interface DailyRating {
-  
-}
+import { Rating, formatDailyRating, saveDailyRating } from 'hooks/useRatings';
 
 const Ratings = () => {
   const [categories, setCategories] = useState<Array<Category>>([]);
@@ -117,17 +108,32 @@ const Ratings = () => {
   };
 
   const calculateScore = () => {
-    return Object.values(ratings).reduce((acc, rating) => {
+    return Math.round(Object.values(ratings).reduce((acc, rating) => {
       return acc + (rating.value - 1) * (categories.find((c) => c.id === rating.id)!.importance / 4);
-    }, 0);
+    }, 0));
   }
 
-  const handleSubmit = () => {
-    const score = calculateScore();
-    // save DailyRating to database
-    setScore(score);
-    setSubmitted(true);
-    setReviewOpen(false);
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const dailyRatingScore = calculateScore();
+      const categoriesMap = categories.reduce((acc, category) => {
+        acc[category.id] = category;
+        return acc;
+      }, {} as Record<string, Category>);
+      if (!currentUser) {
+        throw new Error('No current user');
+      }
+      const dailyRating = formatDailyRating(ratings, categoriesMap, currentUser.uid, dailyRatingScore);
+      await saveDailyRating(dailyRating);
+      setScore(dailyRatingScore);
+      setSubmitted(true);
+      setReviewOpen(false);
+    } catch (error) {
+      console.error('Error saving daily rating:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading || currentCategory === undefined) {

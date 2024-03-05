@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
-import { Rating } from './Ratings';
 import { SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { Rating } from 'hooks/useRatings';
 
 const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, setRating: any, starSize: SizeProp, active: boolean}) => {
   const [hover, setHover] = useState(0);
