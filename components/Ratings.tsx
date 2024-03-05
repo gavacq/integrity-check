@@ -72,6 +72,7 @@ const Ratings = () => {
       }
 
       setCategories(allCategories);
+      console.log(allCategories)
       setRatings(
         allCategories.reduce((acc, category) => {
           acc[category.id] = {
@@ -200,7 +201,7 @@ const Ratings = () => {
     day: 'numeric',
   });
 
-  if (isLoading || currentCategory === undefined) {
+  if ((isLoading || currentCategory === undefined) && categories.length !== 0) {
     return <LoadingSpinner />;
   }
 
