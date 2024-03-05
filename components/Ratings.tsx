@@ -101,7 +101,7 @@ const Ratings = () => {
     };
 
     fetchData();
-  }, [currentUser?.uid]);
+  }, [currentUser]);
 
   const setRatingForCategory = (categoryId: string) => {
     return (rating: number) => {
@@ -253,7 +253,7 @@ const Ratings = () => {
           <h2
             className='text-lunar-green-300 font-bold text-2xl'
           >
-            Today's score: {previousDailyRating.score}
+            {`Today\'s score: ${previousDailyRating.score}`}
           </h2>
           <h3 className="text-lunar-green-300 font-bold text-md my-6">
             {`You already submitted a rating today. If you'd like to overwrite your ratings, you can do so below.`}
