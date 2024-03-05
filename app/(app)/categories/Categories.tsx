@@ -392,7 +392,7 @@ const Categories = () => {
                       >
                         <button
                           onClick={handleRemoveEmoji}
-                          className="mt-4 rounded-md bg-revolver-300 px-2 text-black"
+                          className="mb-4 rounded-md bg-revolver-300 px-2 text-black"
                         >
                           Remove Emoji
                         </button>
