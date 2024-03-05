@@ -22,6 +22,10 @@ import {
 import { Timestamp } from 'firebase/firestore';
 import { get } from 'http';
 
+interface DailyRatingWithId extends DailyRating {
+  id: string;
+}
+
 const Ratings = () => {
   const [categories, setCategories] = useState<Array<Category>>([]);
   const [currentCategory, setCurrentCategory] = useState<Category | undefined>(
@@ -45,8 +49,9 @@ const Ratings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [score, setScore] = useState(0);
   const [previousDailyRating, setPreviousDailyRating] = useState<
-    DailyRating | undefined
+    DailyRatingWithId | undefined
   >(undefined);
+  const [showPreviousDailyRating, setShowPreviousDailyRating] = useState(false);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -81,10 +86,16 @@ const Ratings = () => {
 
       // daily rating
       const date = Timestamp.now();
-      const todaysDailyRating = await getDailyRatings(currentUser.uid, date);
-      if (todaysDailyRating.length > 0) {
+      const todaysDailyRatings = await getDailyRatings(currentUser.uid, date);
+      if (Object.entries(todaysDailyRatings).length > 0) {
         // get the most recent daily rating
-        setPreviousDailyRating(todaysDailyRating[todaysDailyRating.length - 1]);
+        const [id, dailyRating] = Object.entries(todaysDailyRatings)[0];
+
+        setPreviousDailyRating({
+          ...dailyRating,
+          id,
+        });
+        setShowPreviousDailyRating(true);
       }
       setIsLoading(false);
     };
@@ -160,7 +171,12 @@ const Ratings = () => {
         currentUser.uid,
         dailyRatingScore
       );
-      await saveDailyRating(dailyRating);
+
+      if (previousDailyRating) {
+        await saveDailyRating(dailyRating, previousDailyRating.id);
+      } else {
+        await saveDailyRating(dailyRating);
+      }
       setScore(dailyRatingScore);
       setSubmitted(true);
       setReviewOpen(false);
@@ -172,7 +188,7 @@ const Ratings = () => {
   };
 
   const handleOverwriteDailyRatings = () => {
-    setPreviousDailyRating(undefined);
+    setShowPreviousDailyRating(false);
   }
 
   const today = new Date();
@@ -230,7 +246,7 @@ const Ratings = () => {
       >
         {date}
       </h1>
-      {!submitted && !reviewOpen && previousDailyRating && (
+      {!submitted && !reviewOpen && showPreviousDailyRating && previousDailyRating && (
         <div
           className='w-2/3 flex flex-col items-center'
         >
@@ -251,7 +267,7 @@ const Ratings = () => {
           </button>
         </div>
       )}
-      {!submitted && !reviewOpen && !previousDailyRating && (
+      {!submitted && !reviewOpen && !showPreviousDailyRating && (
         <>
           <div className="flex flex-col items-center">
             <h2 className="text-lunar-green-300 font-bold text-2xl">

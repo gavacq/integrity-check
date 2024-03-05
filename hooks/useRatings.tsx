@@ -35,10 +35,17 @@ export interface DailyRating {
   categoryRatings: { [categoryId: string]: CategoryRating };
 }
 
-export const saveDailyRating = async (dailyRating: DailyRating) => {
+export const saveDailyRating = async (dailyRating: DailyRating, dailyRatingId?: string) => {
   const db = getFirestore(firebaseApp);
 
   try {
+    if (dailyRatingId) {
+      const ref = doc(db, 'dailyRatings', dailyRatingId);
+      await setDoc(ref, dailyRating, { merge: true });
+      console.log('Document updated with ID: ', ref.id);
+      return;
+    }
+
     const docRef = await addDoc(collection(db, 'dailyRatings'), dailyRating);
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
@@ -75,7 +82,7 @@ export const formatDailyRating = (
 export const getDailyRatings = async (
   userId: string,
   date?: Timestamp
-): Promise<DailyRating[]> => {
+): Promise<Record<string, DailyRating>> => {
   const db = getFirestore(firebaseApp);
   let q: Query | undefined = undefined;
   if (date) {
@@ -101,10 +108,10 @@ export const getDailyRatings = async (
     q = query(collection(db, 'dailyRatings'), where('userId', '==', userId));
   }
   const querySnapshot = await getDocs(q);
-  const dailyRatings: DailyRating[] = [];
-  querySnapshot.forEach((doc) => {
-    dailyRatings.push(doc.data() as DailyRating);
-  });
+  const dailyRatings = await querySnapshot.docs.reduce(
+    (acc, doc) => ({ ...acc, [doc.id]: doc.data() as DailyRating }),
+    {}
+  );
   return dailyRatings;
 };
 
