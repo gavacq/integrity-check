@@ -72,7 +72,7 @@ const Categories = () => {
   const [newCategory, setNewCategory] = useState<Category>({
     name: 'My Category',
     importance: 0,
-    emoji: '❓',
+    emoji: '',
     id: 'tempKey',
   });
   const [focusedRow, setFocusedRow] = useState<string | null>(null);
