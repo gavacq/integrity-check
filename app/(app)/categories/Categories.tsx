@@ -310,7 +310,7 @@ const Categories = () => {
       <div className="grid grid-cols-3 items-center w-5/6">
         <div className="text-left">
           {isEditing ? (
-            <div className="grid grid-cols-3 items-left">
+            <div className="grid grid-cols-2 items-left">
               <FontAwesomeIcon
                 icon={faCheck}
                 size="sm"
@@ -351,8 +351,7 @@ const Categories = () => {
         <div className="flex flex-col mt-4 w-5/6">
           <div className="flex flex-col items-center">
             {/* Fixed Headers */}
-            <div className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] w-full bg-ebony-950 text-lunar-green-200 font-bold text-sm">
-              <div className="text-center col-start-1">Emoji</div>
+            <div className="grid grid-cols-[3fr,1fr,0.5fr,0.5fr] w-full bg-ebony-950 text-lunar-green-200 font-bold text-sm">
               <div className="text-left">Name</div>
               <div className="text-left">Importance</div>
             </div>
@@ -367,7 +366,7 @@ const Categories = () => {
 
             {/* Scrollable Grid Body */}
             <div
-              className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
+              className="grid grid-cols-[3fr,1fr,0.5fr,0.5fr] gap-y-2 w-full overflow-y-auto text-lunar-green-200"
               style={{ maxHeight: 'calc(100vh - 500px)' }}
             >
               {Object.entries(updatedCategories).map((category) =>
@@ -379,30 +378,7 @@ const Categories = () => {
                     tabIndex={0} // Make the div focusable
                   >
                     <input
-                      className="w-full col-start-1 bg-transparent text-center border-shuttle-gray-800 border-b-2 h-12"
-                      type="text"
-                      value={category[1].emoji}
-                      readOnly
-                      onFocus={() => setShowEmojiPicker(true)}
-                    />
-                    {showEmojiPicker && (
-                      <div
-                        onClick={closeEmojiModal}
-                        className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex  flex-col justify-center items-center z-50"
-                      >
-                        <button
-                          onClick={handleRemoveEmoji}
-                          className="mb-4 rounded-md bg-revolver-300 px-2 text-black"
-                        >
-                          Remove Emoji
-                        </button>
-                        <EmojiPicker
-                          onEmojiClick={onEmojiClick}
-                        />
-                      </div>
-                    )}
-                    <input
-                      className="w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-12 overflow-hidden whitespace-nowrap text-ellipsis"
+                      className="col-start-1 w-full text-left bg-transparent border-shuttle-gray-800 border-b-2 h-12 overflow-hidden whitespace-nowrap text-ellipsis"
                       type="text"
                       value={category[1].name}
                       onChange={(e) =>
@@ -454,10 +430,7 @@ const Categories = () => {
                   </div>
                 ) : (
                   <div key={category[0]} className="contents">
-                    <div className="col-start-1 grid items-center justify-center border-shuttle-gray-800 border-b-2 h-12">
-                      <span>{category[1].emoji}</span>
-                    </div>
-                    <div className="grid items-center border-shuttle-gray-800 border-b-2 h-12 ">
+                    <div className="col-start-1 grid items-center border-shuttle-gray-800 border-b-2 h-12 ">
                       <span className="text-ellipsis overflow-hidden whitespace-nowrap">
                         {category[1].name}
                       </span>

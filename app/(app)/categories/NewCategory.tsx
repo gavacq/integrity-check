@@ -65,39 +65,14 @@ const NewCategory = ({
       emoji: '',
     });
     setShowEmojiPicker(false);
-  }
+  };
 
   return (
     <div
-      className="grid grid-cols-[1fr,3fr,1fr,0.5fr,0.5fr] w-full mb-4 mt-2 h-8 items-center"
+      className="grid grid-cols-[3fr,1fr,0.5fr,0.5fr] w-full mb-4 mt-2 h-8 items-center"
       onFocus={() => handleFocus()}
       onBlur={() => handleBlur(category.importance)}
     >
-      <div className="grid items-center justify-center col-start-1 border-b border-shuttle-gray-300 h-12 bg-shuttle-gray-950">
-        <input
-          type="text"
-          value={category.emoji}
-          className="rounded-sm w-full bg-transparent text-lunar-green-100 text-center h-12"
-          onFocus={() => setShowEmojiPicker(true)}
-          readOnly // Add this if you want the field to be read-only
-        />
-        {showEmojiPicker && (
-          <div
-            onClick={closeEmojiModal}
-            className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex  flex-col justify-center items-center z-50"
-          >
-            <button
-              onClick={handleRemoveEmoji}
-              className="mb-4 rounded-md bg-revolver-300 px-2 text-black"
-            >
-              Remove Emoji
-            </button>
-            <EmojiPicker
-              onEmojiClick={onEmojiClick}
-            />
-          </div>
-        )}
-      </div>
       <div className="text-left border-b border-shuttle-gray-300 h-12 grid items-center justify-center bg-shuttle-gray-950">
         <input
           type="text"
