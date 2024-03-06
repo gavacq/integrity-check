@@ -94,7 +94,6 @@ const NewCategory = ({
             </button>
             <EmojiPicker
               onEmojiClick={onEmojiClick}
-              emojiStyle={EmojiStyle.NATIVE}
             />
           </div>
         )}

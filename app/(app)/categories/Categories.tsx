@@ -398,7 +398,6 @@ const Categories = () => {
                         </button>
                         <EmojiPicker
                           onEmojiClick={onEmojiClick}
-                          emojiStyle={EmojiStyle.NATIVE}
                         />
                       </div>
                     )}
