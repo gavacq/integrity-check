@@ -32,12 +32,12 @@ const NewCategory = ({
   const handleFocus = () => {
     setFocusExistingCategories(null);
     setFocusNewCategory(true);
-  }
+  };
 
   const handleEditImportance = (value) => {
     let updatedValue = value;
     if (value == '') {
-      updatedValue = ''
+      updatedValue = '';
     } else {
       const num = parseInt(value);
       updatedValue = isNaN(num) ? 0 : Math.max(num, 0);
@@ -47,8 +47,7 @@ const NewCategory = ({
       ...category,
       importance: updatedValue,
     });
-  }
-
+  };
 
   const handleBlur = (value: number | string) => {
     setFocusNewCategory(false);
@@ -58,6 +57,14 @@ const NewCategory = ({
         importance: 0,
       });
     }
+  };
+
+  const handleRemoveEmoji = () => {
+    setCategory({
+      ...category,
+      emoji: '',
+    });
+    setShowEmojiPicker(false);
   }
 
   return (
@@ -77,20 +84,18 @@ const NewCategory = ({
         {showEmojiPicker && (
           <div
             onClick={closeEmojiModal}
-            style={{
-              position: 'fixed',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
+            className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex  flex-col justify-center items-center z-50"
           >
-            <EmojiPicker onEmojiClick={onEmojiClick} emojiStyle={EmojiStyle.NATIVE} />
+            <button
+              onClick={handleRemoveEmoji}
+              className="mb-4 rounded-md bg-revolver-300 px-2 text-black"
+            >
+              Remove Emoji
+            </button>
+            <EmojiPicker
+              onEmojiClick={onEmojiClick}
+              emojiStyle={EmojiStyle.NATIVE}
+            />
           </div>
         )}
       </div>
@@ -111,9 +116,7 @@ const NewCategory = ({
         <input
           type="number"
           value={category.importance}
-          onChange={(e) =>
-            handleEditImportance(e.target.value)
-          }
+          onChange={(e) => handleEditImportance(e.target.value)}
           className="text-center rounded-sm w-full bg-transparent text-lunar-green-100"
         />
       </div>
