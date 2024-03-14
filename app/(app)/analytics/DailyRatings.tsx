@@ -1,22 +1,36 @@
 'use client';
 
+import { Firestore, Timestamp } from 'firebase/firestore';
 import { getDailyRatings } from 'hooks/useRatings';
 import { useAuth } from 'providers/AuthContext';
 import React, { useState, useEffect } from 'react';
-import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
 const DailyRatings = () => {
-  const [dailyRatings, setDailyRatings] = useState<{name: string, score: number}[]>([]);
+  const [dailyRatings, setDailyRatings] = useState<
+    { date: string; score: number }[]
+  >([]);
   const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       if (!currentUser) throw new Error('User not found');
       const fetchedDailyRatings = await getDailyRatings(currentUser.uid);
-      const formattedData = Object.values(fetchedDailyRatings).map(rating => ({
-        name: rating.date.toDate().toLocaleDateString(), // Assuming 'date' is a Firestore Timestamp
-        score: rating.score,
-      }));
+      const formattedData = Object.values(fetchedDailyRatings)
+        .sort((a, b) => a.date.seconds - b.date.seconds)
+        .map((rating) => ({
+          date: rating.date.toDate().toLocaleDateString(), // Assuming 'date' is a Firestore Timestamp
+          score: rating.score,
+        }));
       setDailyRatings(formattedData);
     };
 
@@ -30,11 +44,16 @@ const DailyRatings = () => {
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
+        <XAxis dataKey="date" />
+        <YAxis dataKey="score" />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="score" stroke="#8884d8" activeDot={{ r: 8 }} />
+        <Line
+          type="monotone"
+          dataKey="score"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
