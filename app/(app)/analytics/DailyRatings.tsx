@@ -1,6 +1,5 @@
 'use client';
 
-import { Firestore, Timestamp } from 'firebase/firestore';
 import { getDailyRatings } from 'hooks/useRatings';
 import { useAuth } from 'providers/AuthContext';
 import React, { useState, useEffect } from 'react';

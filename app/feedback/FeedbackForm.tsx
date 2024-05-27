@@ -21,7 +21,6 @@ const FeedbackForm = () => {
     });
   }, [posthog]);
 
-  // Removed the useEffect that checks local storage and directly set showSurvey to true
   const [showSurvey, setShowSurvey] = useState(true);
 
   const handleDismiss = () => {

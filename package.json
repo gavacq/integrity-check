@@ -2,7 +2,7 @@
   "name": "integrity-check",
   "version": "1.0.0",
   "type": "module",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",

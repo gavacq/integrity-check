@@ -10,7 +10,6 @@ import React, {
 import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { firebaseApp } from 'utils/firebase';
 import LoadingSpinner from 'components/LoadingSpinner';
-import { usePathname, useRouter } from 'next/navigation';
 import posthog from 'posthog-js';
 
 // Define the type for the context value
@@ -56,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   if (isLoading) {
-    return <LoadingSpinner />; // Replace with a styled loader/spinner as needed
+    return <LoadingSpinner />; 
   }
 
   return (

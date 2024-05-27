@@ -1,8 +1,6 @@
 'use client';
-// a component that accepts a list of categories and renders a StarRating component for each category.
-// one StarRating is displayed at a time, and once the user has rated the category, the next category is displayed.
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import RatingsReview from './RatingsReview';
 import SubmitRatings from './SubmitRatings';
@@ -20,7 +18,6 @@ import {
   saveDailyRating,
 } from 'hooks/useRatings';
 import { Timestamp } from 'firebase/firestore';
-import { get } from 'http';
 
 interface DailyRatingWithId extends DailyRating {
   id: string;
@@ -60,7 +57,6 @@ const Ratings = () => {
         throw new Error('No current user');
       }
 
-      // categories
       const allCategories = await getCategories(currentUser?.uid || '');
 
       // check if valid importance sum

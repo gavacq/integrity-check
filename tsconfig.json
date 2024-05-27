@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "../union/webapp/app/not-found.tsx"  ],
   "exclude": [
     "node_modules"
   ]

@@ -164,17 +164,6 @@ const Categories = () => {
     });
   };
 
-  const onEmojiClick = (event) => {
-    handleEditCategory(focusedRow, 'emoji', event.emoji);
-    setShowEmojiPicker(false); // Hide emoji picker after selection
-  };
-
-  const closeEmojiModal = (e) => {
-    if (e.target === e.currentTarget) {
-      setShowEmojiPicker(false);
-    }
-  };
-
   const handleClickAddNewCategory = async () => {
     setShowInputs(true);
     setIsEditing(true);

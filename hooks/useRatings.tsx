@@ -3,14 +3,12 @@ import {
   Timestamp,
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   getFirestore,
   query,
   setDoc,
   where,
-  writeBatch,
 } from 'firebase/firestore';
 import { firebaseApp } from 'utils/firebase';
 import { Category } from './useCategories';

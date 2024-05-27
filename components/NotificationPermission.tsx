@@ -2,8 +2,6 @@
 
 
 
-// NotificationPermission component
-
 const NotificationPermission = () => {
   const requestNotificationPermission = async () => {
     const permission = await Notification.requestPermission();

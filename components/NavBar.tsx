@@ -1,16 +1,9 @@
 'use client'
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser, faContactCard, faEnvelope  } from '@fortawesome/free-regular-svg-icons';
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { faEnvelope  } from '@fortawesome/free-regular-svg-icons';
 
-import { firebaseApp } from 'utils/firebase';
-import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from 'providers/AuthContext';
 import ProfileMenu from './ProfileMenu';
-import { faMailBulk, faMailForward, faMailReply } from '@fortawesome/free-solid-svg-icons';
-import { faMailchimp } from '@fortawesome/free-brands-svg-icons';
 
 const NavBar = () => {
   return (

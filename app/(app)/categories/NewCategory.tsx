@@ -1,4 +1,3 @@
-import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import { Category } from 'hooks/useCategories';
 import { useState } from 'react';
 
@@ -13,21 +12,7 @@ const NewCategory = ({
   setFocusExistingCategories: (key: string | null) => void;
   remainingImportance: number;
 }) => {
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [focusNewCategory, setFocusNewCategory] = useState(false);
-  const onEmojiClick = (event) => {
-    setCategory({
-      ...category,
-      emoji: event.emoji,
-    });
-    setShowEmojiPicker(false); // Hide emoji picker after selection
-  };
-
-  const closeEmojiModal = (e) => {
-    if (e.target === e.currentTarget) {
-      setShowEmojiPicker(false);
-    }
-  };
 
   const handleFocus = () => {
     setFocusExistingCategories(null);
@@ -57,14 +42,6 @@ const NewCategory = ({
         importance: 0,
       });
     }
-  };
-
-  const handleRemoveEmoji = () => {
-    setCategory({
-      ...category,
-      emoji: '',
-    });
-    setShowEmojiPicker(false);
   };
 
   return (

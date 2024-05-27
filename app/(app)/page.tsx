@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Ratings from "components/Ratings";
-import AuthProtected from "components/AuthProtected";
-import IconTray from "components/IconTray";
 
 export const metadata: Metadata = {
   title: "Home",

@@ -27,10 +27,6 @@ html {
   height: 100%;
   box-sizing: border-box;
   touch-action: manipulation;
-  /* font-feature-settings:
-    'case' 1,
-    'rlig' 1,
-    'calt' 0; */
 }
 
 body {
@@ -38,7 +34,6 @@ body {
     'Helvetica', sans-serif;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  /* @apply bg-silver antialiased; */
   position: relative;
   min-height: 100%;
   margin: 0;

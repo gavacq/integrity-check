@@ -31,7 +31,7 @@ const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, s
                 onClick={() => setRating(ratingValue)}
                 style={{ cursor: 'pointer' }}
                 className='text-outer-space-500'
-                size={starSize} // Increase the size of the stars
+                size={starSize} 
               />
             </label>
           )
@@ -44,7 +44,7 @@ const StarRating = ({ rating, setRating, starSize, active }: { rating: Rating, s
               icon={ratingValue <= rating.value ? faStar : farStar}
               style={{ cursor: 'pointer' }}
               className='text-outer-space-500'
-              size={starSize} // Increase the size of the stars
+              size={starSize}
             />
         )
 
